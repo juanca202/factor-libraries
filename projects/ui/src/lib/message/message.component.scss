@@ -1,0 +1,25 @@
+.mat-dialog-title {
+    display: flex;
+    align-items: center;
+
+    ft-icon {
+        margin-right: 0.5rem;
+    }
+}
+
+.mat-dialog-content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    ft-icon {
+        margin-right: 0.5rem;
+    }
+}
+
+.mat-dialog-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 1.5rem;
+}

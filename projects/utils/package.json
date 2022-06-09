@@ -1,0 +1,14 @@
+{
+  "name": "@factor_ec/utils",
+  "version": "1.0.4",
+  "license": "CC-BY-NC-ND-4.0",
+  "author": "Factor",
+  "private": false,
+  "peerDependencies": {
+    "@angular/common": "^14.0.0",
+    "@angular/core": "^14.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

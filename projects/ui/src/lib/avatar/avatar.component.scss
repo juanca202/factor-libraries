@@ -1,0 +1,20 @@
+:host {
+    --default-size: var(--size, 3rem);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: calc(var(--default-size) / 2);
+    font-size: calc(var(--default-size) - (var(--default-size) * 0.6));
+    min-width: var(--default-size);
+    min-height: var(--default-size);
+    cursor: default;
+    user-select: none;
+}
+
+div {
+    font-size: 1em;
+    line-height: 1em;
+}
