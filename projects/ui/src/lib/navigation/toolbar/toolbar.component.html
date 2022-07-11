@@ -1,0 +1,43 @@
+<div (ftObserveIntersecting)="setOverlapped($event)" [ftObserveIntersectingOptions]="rootMargin"></div>
+<div class="content">
+  <div class="container p-2 p-sm-3 pb-md-3 pt-md-5 px-md-3 px-lg-5">
+    <div class="d-flex align-items-center">
+      <h5 class="title ml-2 ml-md-0 mb-0 mr-auto" *ngIf="!titleOptions; else titleForm">{{ title }}</h5>
+      <ng-container *ngFor="let option of actionOptions">
+        <button type="button" class="p-2" mat-button [ngClass]="option.class || ''" *ngIf="!option.children" (click)="option.click ? option.click($event) : null" title="{{ option.label }}">
+          <div class="d-flex align-items-center">
+            <ft-icon *ngIf="option.iconName" [name]="option.iconName" size="2"></ft-icon>
+            <div *ngIf="option.label" class="label d-none d-sm-inline-block ml-1">{{ option.label }}</div>
+          </div>
+        </button>
+        <ng-container *ngIf="option.children">
+          <button type="button" class="p-2" mat-button [matMenuTriggerFor]="menu" [ngClass]="option.class || ''" title="{{ option.label }}">
+            <div class="d-flex align-items-center">
+              <ft-icon *ngIf="option.iconName" [name]="option.iconName" size="2"></ft-icon>
+              <div *ngIf="option.label" class="label d-none d-sm-inline-block ml-1">{{ option.label }}</div>
+            </div>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngFor="let childOption of option.children" (click)="childOption.click ? childOption.click($event): null">{{ childOption.label }}</button>
+          </mat-menu>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<ng-template #titleForm>
+  <button type="button" class="title p-2 pl-3 mr-auto" mat-button [matMenuTriggerFor]="titleMenu">
+    <div class="d-flex align-items-center">
+      <div class="label mr-1">{{ currentTitleOption.label }}</div>
+      <ft-icon name="angle-down" size="1"></ft-icon>
+    </div>
+  </button>
+  <mat-menu #titleMenu="matMenu">
+    <button class="mr-4" mat-menu-item [disabled]="option == currentTitleOption" *ngFor="let option of titleOptions" (click)="currentTitleOption = option; option.click ? option.click($event) : null">
+      <div class="d-flex align-items-center">
+        <ft-icon [name]="option == currentTitleOption? 'check' : ''" class="mr-1"></ft-icon>
+        <div>{{ option.label }}</div>
+      </div>
+    </button>
+  </mat-menu>
+</ng-template>

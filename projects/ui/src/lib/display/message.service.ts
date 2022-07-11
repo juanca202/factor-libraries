@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, Observable, of } from "rxjs";
+import { ReplaySubject, Observable } from "rxjs";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 
 import { MessageComponent } from './message/message.component';
-import { Content } from './models/content';
+import { Content } from '../models/content';
 import { ContentComponent } from './content/content.component';
-import { MessageOptions } from './models/message-options';
+import { MessageOptions } from '../models/message-options';
 
 @Injectable({
   providedIn: 'root'

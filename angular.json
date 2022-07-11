@@ -110,7 +110,7 @@
       "projectType": "library",
       "root": "projects/utils",
       "sourceRoot": "projects/utils/src",
-      "prefix": "lib",
+      "prefix": "ft",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
@@ -146,7 +146,7 @@
       },
       "root": "projects/ui",
       "sourceRoot": "projects/ui/src",
-      "prefix": "lib",
+      "prefix": "ft",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

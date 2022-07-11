@@ -1,0 +1,29 @@
+@import '../../scss/variables';
+@import '../../scss/breakpoints';
+
+:host {
+  z-index: var(--z-index, 980);
+  background-color: var(--background-color, #FFF);
+  transition: background-color 0.2s, box-shadow 0.2s;
+  display: block;
+  position: sticky;
+  top: -1px;
+  &.overlapped {
+    box-shadow: 0 0 1px 0 rgba(0,0,0,.14), 0 0 6px 0 rgba(0,0,0,.12);
+  }
+  @include media-breakpoint-up(md) {
+    top: -2rem;
+  }
+}
+.content {
+  button {
+    min-width: 0;
+    .label {
+      line-height: initial;
+    }
+  }
+  .title {
+    font-size: 1.21rem;
+    font-weight: 500;
+  }
+}

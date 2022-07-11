@@ -25,7 +25,7 @@ function typeValidator(number: string, type: string): boolean {
             }
             break;
         case 'ruc_natural':
-            if (code < 0 || code > 5) {
+            if (code < 0 || code > 6) {
                 value = false;
             }
             break;

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Inject, HostBinding } from '@angular/core';
-import { UiConfiguration } from '../models/ui-configuration';
+import { UiConfiguration } from '../../models/ui-configuration';
 
 @Component({
   selector: 'ft-icon',

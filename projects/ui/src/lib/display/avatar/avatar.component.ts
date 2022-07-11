@@ -16,7 +16,7 @@ export class AvatarComponent implements OnInit {
   @Input()
   class: string = '';
   @Input()
-  set src(value: string) {
+  set src(value: string | undefined) {
     if (value && value.trim()!='') {
       this._src = value;
       let image = new Image();

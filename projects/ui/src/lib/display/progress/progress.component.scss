@@ -4,42 +4,34 @@
   line-height: 0;
   display: inline-block;
 
-  &[size="1"],
   &.ft-progress--1 {
     font-size: 1rem;
   }
 
-  &[size="2"],
   &.ft-progress--2 {
     font-size: 1.5rem;
   }
 
-  &[size="3"],
   &.ft-progress--3 {
     font-size: 2rem;
   }
 
-  &[size="4"],
   &.ft-progress--4 {
     font-size: 3rem;
   }
 
-  &[size="5"],
   &.ft-progress--5 {
     font-size: 4.5rem;
   }
 
-  &[size="6"],
   &.ft-progress--6 {
     font-size: 8rem;
   }
 
-  &[size="7"],
   &.ft-progress--7 {
     font-size: 16rem;
   }
 
-  &[size="8"],
   &.ft-progress--8 {
     font-size: 32rem;
   }
