@@ -15,6 +15,11 @@ import { NavigationModule } from './navigation/navigation.module';
     DisplayModule,
     InputsModule,
     NavigationModule
+  ],
+  exports: [
+    DisplayModule,
+    InputsModule,
+    NavigationModule
   ]
 })
 export class UiModule { 
