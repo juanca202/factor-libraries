@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input, HostBinding } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Action } from '../../models/action';
@@ -9,18 +9,20 @@ import { Action } from '../../models/action';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent {
-  @Output()
-  change = new EventEmitter<Action>();
-  @Input()
-  iconCollection!: string;
-  @Input()
-  iconNameField: string = 'iconName';
-  @Input()
-  iconPath!: string;
-  @Input()
-  labelField: string = 'label';
-  @Input()
-  items!: Action[];
+  @Output() change = new EventEmitter<Action>();
+  @Input() iconCollection!: string;
+  @Input() iconNameField: string = 'iconName';
+  @Input() iconPath!: string;
+  @Input() labelField: string = 'label';
+  @Input() items!: Action[];
+
+  @Input() class: string = '';
+  @HostBinding('class') get hostClasses(): string {
+    return [
+      'ft-list',
+      this.class
+    ].join(' ');
+  };
 
   constructor(
     private router: Router
@@ -45,8 +47,10 @@ export class ListComponent {
     }
   }
   toggleCollapsible(action: Action): void {
-    action.metadata.show = !action.metadata.show;
+    action.metadata = action.metadata || {};
+    action.metadata.show = !action.metadata?.show;
     this.change.emit(action);
   }
 
 }
+

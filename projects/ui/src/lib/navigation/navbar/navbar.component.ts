@@ -8,33 +8,27 @@ import { Action } from '../../models/action';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  @Input()
-  class: string = '';
-  @Input()
-  iconCollection!: string;
-  @Input()
-  iconNameField: string = 'iconName';
-  @Input()
-  labelField: string = 'label';
-  @Input()
-  labelPlacement: 'top' | 'right' | 'bottom' | 'left' | 'auto' | 'none' = 'auto';
-  @Input()
-  items!: Action[];
-  @Input()
-  position: 'top' | 'right' | 'bottom' | 'left' | 'auto' = 'auto';
+  @Input() iconCollection!: string;
+  @Input() iconNameField: string = 'iconName';
+  @Input() labelField: string = 'label';
+  @Input() labelPlacement: 'top' | 'right' | 'bottom' | 'left' | 'auto' | 'none' = 'auto';
+  @Input() items!: Action[];
+  @Input() position: 'top' | 'right' | 'bottom' | 'left' | 'auto' = 'auto';
+
+  @Input() class: string = '';
+  @HostBinding('class') get hostClasses(): string {
+    return [
+      'ft-navbar',
+      this.class,
+      this.position
+    ].join(' ');
+  };
 
   constructor(
     private router: Router
   ) { }
 
   ngOnInit() { }
-  @HostBinding('class')
-  get hostClasses(): string {
-    return [
-      this.class,
-      this.position
-    ].join(' ');
-  }
   getComponentType(item: Action): string {
     let type: string = 'text';
     if (!item.url || item.url.match(/^(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/)) {

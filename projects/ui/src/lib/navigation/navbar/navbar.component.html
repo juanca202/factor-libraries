@@ -1,21 +1,21 @@
 <ng-content select="[ftStart]"></ng-content>
 <div class="list" *ngIf="items">
   <ng-container *ngFor="let item of items; trackBy: trackByItem">
-    <ng-container *ngTemplateOutlet="action; context: { item: item }"></ng-container>
+    <ng-container *ngTemplateOutlet="actionTemplate; context: { item: item }"></ng-container>
   </ng-container>
 </div>
 <ng-content select="[ftEnd]"></ng-content>
-<ng-template #action let-item="item">
+<ng-template #actionTemplate let-item="item">
   <ng-container [ngSwitch]="getComponentType(item)">
     <button *ngSwitchCase="'button'" type="button" matRipple class="list__item" [ngClass]="[labelPlacement, item.class || '' ]" (click)="setItem(item)">
-      <ng-container *ngTemplateOutlet="text; context: { item: item }"></ng-container>
+      <ng-container *ngTemplateOutlet="textTemplate; context: { item: item }"></ng-container>
     </button>
     <a *ngSwitchCase="'link'" [routerLink]="item.url" routerLinkActive="active" matRipple class="list__item" [ngClass]="[labelPlacement, item.class || '' ]" (click)="setItem(item)">
-      <ng-container *ngTemplateOutlet="text; context: { item: item }"></ng-container>
+      <ng-container *ngTemplateOutlet="textTemplate; context: { item: item }"></ng-container>
     </a>
   </ng-container>
 </ng-template>
-<ng-template #text let-item="item">
+<ng-template #textTemplate let-item="item">
   <div class="item">
     <ft-icon class="item__icon" *ngIf="item[iconNameField]" [name]="item[iconNameField]" [collection]="iconCollection" [title]="labelPlacement === 'none' ? item[labelField] : '' "></ft-icon>
     <div class="item__label" *ngIf="labelPlacement !== 'none'">{{ item[labelField] }}</div>

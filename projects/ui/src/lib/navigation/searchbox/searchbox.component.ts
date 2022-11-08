@@ -17,8 +17,6 @@ export class SearchboxComponent implements OnInit {
   /**
    * Clase o clases asignadas al componente
    */
-  @Input()
-  class!: string;
   @ViewChild('input', { static: false })
   input!: ElementRef<any>;
   @ViewChild('inputPlaceholder', { static: false })
@@ -26,19 +24,19 @@ export class SearchboxComponent implements OnInit {
   disabled!: boolean;
   private _value!: string;
   private shown!: boolean;
-  @Input()
-  placeholder!: string;
-  @Output()
-  execute = new EventEmitter<string>();
-  @Output()
-  showChange = new EventEmitter<boolean>();
-  @HostBinding('class')
-  get hostClasses(): string {
+  @Input() placeholder!: string;
+  @Output() execute = new EventEmitter<string>();
+  @Output() showChange = new EventEmitter<boolean>();
+
+  @Input() class: string = '';
+  @HostBinding('class') get hostClasses(): string {
     return [
+      'ft-searchbox',
       this.class,
       this.shown ? 'show' : ''
     ].join(' ');
-  }
+  };
+
   onChange = (_: any) => { };
   onTouched = (_: any) => { };
   @Input()

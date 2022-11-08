@@ -14,34 +14,39 @@
 </ng-template>
 <ng-template #action let-item="item">
   <ng-container [ngSwitch]="getComponentType(item)">
-    <button *ngSwitchCase="'button'" type="button" matRipple class="list__item" [ngClass]="item.class" (click)="setItem(item)">
+    <button *ngSwitchCase="'button'" type="button" matRipple class="ft-list__item" [ngClass]="item.class"
+      (click)="setItem(item)">
       <ng-container *ngTemplateOutlet="text; context: { item: item }"></ng-container>
     </button>
-    <a *ngSwitchCase="'link'" [routerLink]="item.url" routerLinkActive="active" matRipple class="list__item" [ngClass]="item.class" (click)="setItem(item)">
+    <a *ngSwitchCase="'link'" [routerLink]="item.url" routerLinkActive="ft-active" matRipple class="ft-list__item"
+      [ngClass]="item.class" (click)="setItem(item)">
       <ng-container *ngTemplateOutlet="text; context: { item: item }"></ng-container>
     </a>
   </ng-container>
 </ng-template>
 <ng-template #collapsible let-item="item">
-  <button type="button" matRipple class="collapsible-header list__item" [ngClass]="{ show: item.metadata.show }" (click)="toggleCollapsible(item)">
-    <div class="d-flex align-items-center flex-grow-1">
-      <ft-icon class="item__icon" *ngIf="item[iconNameField]" [name]="item[iconNameField]" [collection]="iconCollection" [path]="iconPath"></ft-icon>
-      <div class="item__label flex-grow-1">{{ item[labelField] }}</div>
-      <ft-icon class="item__toggle" name="angle-right" size="1"></ft-icon>
+  <button type="button" matRipple class="ft-collapsible-header ft-list__item"
+    [ngClass]="{ 'ft-show': item.metadata?.show }" (click)="toggleCollapsible(item)">
+    <div class="ft-item">
+      <ft-icon class="ft-item__icon" *ngIf="item[iconNameField]" [name]="item[iconNameField]"
+        [collection]="iconCollection" [path]="iconPath"></ft-icon>
+      <div class="ft-item__label">{{ item[labelField] }}</div>
+      <ft-icon class="ft-item__toggle" name="angle-right" size="1"></ft-icon>
     </div>
   </button>
-  <div class="collapsible" [ngClass]="{show:item.metadata.show}" *ngIf="item.children">
+  <div class="ft-collapsible" [ngClass]="{ 'ft-show': item.metadata?.show }" *ngIf="item.children">
     <ng-container *ngTemplateOutlet="switch; context: { children: item.children }"></ng-container>
   </div>
 </ng-template>
 <ng-template #header let-item="item">
-  <div class="header" [ngClass]="item.class">
+  <div class="ft-header" [ngClass]="item.class">
     {{ item[labelField] }}
   </div>
 </ng-template>
 <ng-template #text let-item="item">
-  <div class="d-flex align-items-center">
-    <ft-icon class="item__icon" *ngIf="item[iconNameField]" [name]="item[iconNameField]" [collection]="iconCollection" [path]="iconPath"></ft-icon>
-    <div class="item__label">{{ item[labelField] }}</div>
+  <div class="ft-item">
+    <ft-icon class="ft-item__icon" *ngIf="item[iconNameField]" [name]="item[iconNameField]" [collection]="iconCollection"
+      [path]="iconPath"></ft-icon>
+    <div class="ft-item__label">{{ item[labelField] }}</div>
   </div>
 </ng-template>
