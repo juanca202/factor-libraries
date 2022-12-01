@@ -2,18 +2,21 @@
  * Public API Surface of ui
  */
 
-export * from './lib/display/avatar/avatar.component';
-export * from './lib/display/icon/icon.component';
-export * from './lib/display/image/image.component';
-export * from './lib/display/content/content.component';
-export * from './lib/display/message/message.component';
-export * from './lib/display/message.service';
-export * from './lib/display/progress/progress.component';
-export * from './lib/display/progress.service';
-export * from './lib/display/observe-intersecting.directive';
-export * from './lib/display/display.module';
-export * from './lib/inputs/rating/rating.component';
-export * from './lib/inputs/inputs.module';
+export * from './lib/io/avatar/avatar.component';
+export * from './lib/io/icon/icon.component';
+export * from './lib/io/image/image.component';
+export * from './lib/io/message-content/message-content.component';
+export * from './lib/io/message/message.component';
+export * from './lib/io/message.service';
+export * from './lib/io/progress/progress.component';
+export * from './lib/io/progress.service';
+export * from './lib/io/observe-intersecting.directive';
+export * from './lib/io/io.module';
+export * from './lib/io/rating/rating.component';
+export * from './lib/io/timeline/timeline.component';
+export * from './lib/io/listview/listview.component';
+export * from './lib/io/expression-builder/expression-builder.component';
+export * from './lib/io/io.module';
 export * from './lib/navigation/list/list.component';
 export * from './lib/navigation/navbar/navbar.component';
 export * from './lib/navigation/searchbox/searchbox.component';

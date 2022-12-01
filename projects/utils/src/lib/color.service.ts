@@ -6,11 +6,11 @@ import { Injectable } from '@angular/core';
 export class ColorService {
   L: number[];
   S: number[];
-  hueRanges: {min: number, max: number}[];
+  hueRanges: { min: number, max: number }[];
 
   constructor() {
     const options: any = {};
-    let LS = [options.lightness, options.saturation].map(function(param) {
+    let LS = [options.lightness, options.saturation].map(function (param) {
       param = param || [0.35, 0.5, 0.65]; // note that 3 is a prime
       return Array.isArray(param) ? param.concat() : [param];
     });
@@ -27,7 +27,7 @@ export class ColorService {
     if (typeof options.hue === 'undefined') {
       options.hue = [];
     }
-    this.hueRanges = options.hue.map(function(range: {min: number, max: number}) {
+    this.hueRanges = options.hue.map(function (range: { min: number, max: number }) {
       return {
         min: typeof range.min === 'undefined' ? 0 : range.min,
         max: typeof range.max === 'undefined' ? 360 : range.max
@@ -65,7 +65,7 @@ export class ColorService {
  */
   rgb2hex(RGBArray: number[]): string {
     let hex = '#';
-    RGBArray.forEach(function(value) {
+    RGBArray.forEach(function (value) {
       if (value < 16) {
         hex += 0;
       }
@@ -89,7 +89,7 @@ export class ColorService {
     let q = L < 0.5 ? L * (1 + S) : L + S - L * S;
     let p = 2 * L - q;
 
-    return [H + 1 / 3, H, H - 1 / 3].map(function(color) {
+    return [H + 1 / 3, H, H - 1 / 3].map(function (color) {
       if (color < 0) {
         color++;
       }

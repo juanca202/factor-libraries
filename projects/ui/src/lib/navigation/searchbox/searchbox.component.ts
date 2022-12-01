@@ -1,22 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef, forwardRef, Input, HostBinding, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, HostBinding, Input, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'ft-searchbox',
   templateUrl: './searchbox.component.html',
-  styleUrls: ['./searchbox.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SearchboxComponent),
-      multi: true
-    }
-  ]
+  styleUrls: ['./searchbox.component.scss']
 })
-export class SearchboxComponent implements OnInit {
+export class SearchboxComponent {
   /**
-   * Clase o clases asignadas al componente
-   */
+     * Clase o clases asignadas al componente
+     */
   @ViewChild('input', { static: false })
   input!: ElementRef<any>;
   @ViewChild('inputPlaceholder', { static: false })
@@ -90,5 +82,4 @@ export class SearchboxComponent implements OnInit {
   writeValue(value: string): void {
     this.value = value;
   }
-
 }

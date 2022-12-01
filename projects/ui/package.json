@@ -1,14 +1,14 @@
 {
   "name": "@factor_ec/ui",
-  "version": "1.0.18",
+  "version": "2.0.1",
   "license": "CC-BY-NC-ND-4.0",
   "author": "Factor",
   "private": false,
   "peerDependencies": {
-    "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0",
-    "@angular/material": "^14.0.1",
-    "@factor_ec/utils": "^1.0.1"
+    "@angular/common": "^15.0.0",
+    "@angular/core": "^15.0.0",
+    "@angular/material": "^15.0.1",
+    "@factor_ec/utils": "^2.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

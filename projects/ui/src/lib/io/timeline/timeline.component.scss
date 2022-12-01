@@ -1,0 +1,137 @@
+:host {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    --background-color: #fff;
+    --column-width: 30px;
+    --current-date-color: #ff9800;
+}
+.ft-header {
+    background-color: var(--background-color);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 0.75rem;
+    font-weight: 100;
+    padding-bottom: 0.25rem;
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    width: fit-content;
+    &__months {
+        display: flex;
+        > div {
+            background-color: var(--background-color);
+            box-sizing: border-box;
+            font-weight: 400;
+            padding: 0.5rem;
+            white-space: nowrap;
+            width: calc(var(--column-width) * var(--days-in-month));
+        }
+    }
+    &__days {
+        display: flex;
+        > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: var(--column-width);
+            padding: .25rem;
+            border-radius: 100vh;
+            box-sizing: border-box;
+            > .ft-active {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 20px;
+                background-color: var(--current-date-color);
+                color: var(--background-color);
+                border-radius: 100vh;
+                box-sizing: border-box;
+            }
+        }
+    }
+}
+.ft-weekends {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    padding-left: calc(var(--column-width) * var(--start));
+    &__item {
+        min-width: calc(var(--column-width) * var(--weekend-size, 2));
+        background-image: url(https://factor.ec/timesheet/es/bg-weekend.aff6b9d13e42ca0e1023.svg);
+        background-size: 25px;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        ~ .ft-weekends__item {
+            margin-left: calc(var(--column-width) * 5);
+        }
+    }
+}
+.ft-current-date {
+    position: absolute;
+    width: var(--column-width);
+    left: calc(var(--column-width) * var(--current-date));
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+    background-color: var(--current-date-color);
+    opacity: 0.1;
+}
+.ft-tasks {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    padding-top: 0.5rem;
+    gap: 0.5rem;
+    flex-direction: column;
+    &__item {
+        border: 1px solid transparent;
+        height: 28px;
+        background-color: var(--background-color);
+        background-image: linear-gradient(rgba(var(--color-rgb), 0.1), rgba(var(--color-rgb), 0.1));
+        border-radius: 0.25rem;
+        width: calc(var(--column-width) * var(--days));
+        margin-left: calc(var(--column-width) * var(--start));
+        white-space: nowrap;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        cursor: pointer;
+        box-sizing: border-box;
+        &:hover:not(.tasks__item--milestone) {
+            background-image: linear-gradient(rgba(var(--color-rgb), 0.2), rgba(var(--color-rgb), 0.2));
+        }
+        &:focus:not(.tasks__item--milestone),
+        &:active:not(.tasks__item--milestone) {
+            background-image: linear-gradient(rgba(var(--color-rgb), 0.3), rgba(var(--color-rgb), 0.3));
+        }
+        &--milestone {
+            background-color: unset;
+            background-image: unset;
+            &::before {
+                border-radius: 6px;
+                min-height: 12px;
+                min-width: 12px;
+                margin-right: 0.5rem;
+                content: "";
+                background-color: rgba(var(--color-rgb), 1);
+            }
+            &:hover {
+                &::before {
+                    transform: scale(1.2);
+                }
+            }
+            &:focus,
+            &:active {
+                &::before {
+                    transform: scale(0.9);
+                }
+            }
+        }
+    }
+}

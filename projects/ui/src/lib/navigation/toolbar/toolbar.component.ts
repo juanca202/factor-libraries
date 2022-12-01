@@ -1,5 +1,4 @@
-import { Component, OnInit, Input, HostBinding } from '@angular/core';
-
+import { Component, HostBinding, Input } from '@angular/core';
 import { Action } from '../../models/action';
 
 @Component({
@@ -7,7 +6,7 @@ import { Action } from '../../models/action';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss']
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent {
   @Input() actionOptions!: Action[];
   @Input() currentTitleOption!: Action;
   @Input() title!: string;
@@ -39,5 +38,4 @@ export class ToolbarComponent implements OnInit {
   setOverlapped(overlapped: boolean): void {
     this.overlapped = !overlapped;
   }
-
 }

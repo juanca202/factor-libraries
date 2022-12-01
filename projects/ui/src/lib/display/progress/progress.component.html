@@ -1,6 +1,0 @@
-<svg [ngStyle]="{'--bar-color': color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-    <circle class="track" cx="50" cy="50" r="40" />
-    <circle class="bar" [ngClass]="mode" cx="50" cy="50" r="40"
-        [ngStyle]="{'stroke-dashoffset': mode=='determinate'? 'calc((3.14159265 * 40 * 2 * (100 - '+value+')) / 100)' : null}">
-    </circle>
-</svg>

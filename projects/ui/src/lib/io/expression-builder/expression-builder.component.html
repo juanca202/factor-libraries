@@ -1,0 +1,53 @@
+<ng-container [ngTemplateOutlet]="filterGroupTemplate" [ngTemplateOutletContext]="{filter:filters, parent:null}">
+</ng-container>
+<ng-template #filterGroupTemplate let-filter="filter" let-parent="parent">
+    <div class="ft-filter">
+        <div class="ft-filter__tools">
+            <button type="button" class="filter__button filter__button--icon filter__button--toggle"
+                (click)="filter.collapsed = !filter.collapsed" *ngIf="filter.children && filter.children.length > 0">
+                <ft-icon name="angle-right" [ngClass]="{'ft-icon--open': !filter.collapsed}"></ft-icon>
+            </button>
+            <div class="ft-filter__button-group">
+                <button type="button" class="filter__button"
+                    [ngClass]="{'ft-filter__button--active': filter.operator === operator.value}"
+                    *ngFor="let operator of groupOperators" (click)="filter.operator = operator.value">{{ operator.label
+                    }}</button>
+            </div>
+            <button type="button" class="ft-filter__button" (click)="add('filter', filter)" *ngIf="filter.operator">Agregar
+                filtro</button>
+            <button type="button" class="ft-filter__button" (click)="add('group', filter)" *ngIf="filter.operator">Agregar
+                grupo</button>
+            <button type="button" class="ft-filter__button filter__button--icon filter__button--remove"
+                (click)="remove(filter, parent)" *ngIf="parent">
+                <ft-icon name="close"></ft-icon>
+            </button>
+        </div>
+        <div class="ft-filter__children" *ngIf="filter.children && filter.children.length > 0 && !filter.collapsed">
+            <ng-container *ngFor="let child of filter.children">
+                <ng-container [ngTemplateOutlet]="child.type === 'group' ? filterGroupTemplate : filterTemplate"
+                    [ngTemplateOutletContext]="{filter:child, parent:filter.children}">
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</ng-template>
+<ng-template #filterTemplate let-filter="filter" let-parent="parent">
+    <div class="ft-filter">
+        <div class="ft-filter__tools">
+            <select class="filter__input">
+                <option *ngFor="let property of properties" value="property.value">{{ property.label }}</option>
+            </select>
+            <select class="ft-filter__input">
+                <option>Mayor que</option>
+                <option>Mayor igual que</option>
+                <option>Igual que</option>
+                <option>Menor que</option>
+                <option>Menor igual que</option>
+            </select>
+            <input type="text" class="ft-filter__input" />
+            <button type="button" class="filter__button filter__button--icon" (click)="remove(filter, parent)">
+                <ft-icon name="close"></ft-icon>
+            </button>
+        </div>
+    </div>
+</ng-template>

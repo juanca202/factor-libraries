@@ -12,7 +12,7 @@ export class StorageService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
-  private getValue(key: string, storage?: 'local' | 'session' | 'memory'): any {
+  private getValue(key: string, storage?: 'local' | 'session' | 'memory'): any {
     let value: any;
     if (!storage || typeof storage == 'string') {
       switch (storage) {
@@ -31,7 +31,7 @@ export class StorageService {
     }
     return value;
   }
-  public delete(key: string, storage?: 'local' | 'session' | 'memory') {
+  public delete(key: string, storage?: 'local' | 'session' | 'memory') {
     if (isPlatformBrowser(this.platformId)) {
       if (!storage || typeof storage == 'string') {
         switch (storage) {
@@ -50,7 +50,7 @@ export class StorageService {
       }
     }
   }
-  public get(key: string, storage?: 'local' | 'session' | 'memory'): any {
+  public get(key: string, storage?: 'local' | 'session' | 'memory'): any {
     let parsedValue: any;
     if (isPlatformBrowser(this.platformId)) {
       try {
@@ -61,7 +61,7 @@ export class StorageService {
     }
     return parsedValue;
   }
-  public set(key: string, value: any, storage?: 'local' | 'session' | 'memory') {
+  public set(key: string, value: any, storage?: 'local' | 'session' | 'memory') {
     if (isPlatformBrowser(this.platformId)) {
       const valueString = JSON.stringify(value);
       if (!storage || typeof storage == 'string') {

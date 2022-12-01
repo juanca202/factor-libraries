@@ -8,4 +8,3 @@ export * from './lib/google-tag-manager.service';
 export * from './lib/storage.service';
 export * from './lib/validators/ec/identification-validator';
 export * from './lib/validators/ec/identification-type';
-export * from './lib/utils.module';

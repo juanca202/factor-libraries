@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 
 declare var window: any;
 
@@ -53,13 +53,13 @@ export class GoogleTagManagerService {
   private initSubscribers() {
     this.router.events.subscribe(event => {
       try {
-          if (event instanceof NavigationEnd && this.trackingId) {
-            this.addVariable({
-              event:'router.NavigationEnd', 
-              pageTitle: document.title,
-              pagePath: event.urlAfterRedirects
-            });
-          }
+        if (event instanceof NavigationEnd && this.trackingId) {
+          this.addVariable({
+            event: 'router.NavigationEnd',
+            pageTitle: document.title,
+            pagePath: event.urlAfterRedirects
+          });
+        }
       } catch (e) {
         console.error(e);
       }

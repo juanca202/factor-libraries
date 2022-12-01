@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input, HostBinding } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Action } from '../../models/action';
@@ -51,6 +51,4 @@ export class ListComponent {
     action.metadata.show = !action.metadata?.show;
     this.change.emit(action);
   }
-
 }
-

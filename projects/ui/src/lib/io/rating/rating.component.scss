@@ -1,0 +1,61 @@
+:host {
+    line-height: 0;
+    display: inline-flex;
+    &:hover {
+        button {
+            color: var(--primary);
+            & svg:not(.hover) {
+                color: var(--gray);
+            }
+        }
+    }
+    &[size="1"] {
+        font-size: 1rem;
+    }
+    &[size="2"] {
+        font-size: 1.5rem;
+    }
+    &[size="3"] {
+        font-size: 2rem;
+    }
+    &[size="4"] {
+        font-size: 3rem;
+    }
+    &[size="5"] {
+        font-size: 4.5rem;
+    }
+    &[size="6"] {
+        font-size: 8rem;
+    }
+    &[size="7"] {
+        font-size: 16rem;
+    }
+    &[size="8"] {
+        font-size: 32rem;
+    }
+}
+svg {
+    width: 1em;
+    height: 1em;
+    display: block;
+    path {
+        fill: none;
+        stroke-width: 1;
+        stroke: currentColor;
+    }
+    &.hover,
+    &.active {
+        path {
+            fill: currentColor;
+        }
+    }
+}
+button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    &:focus,
+    &:active {
+        outline: none;
+    }
+}

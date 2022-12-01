@@ -1,24 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { DisplayModule } from './display/display.module';
-
-import { InputsModule } from './inputs/inputs.module';
+import { IoModule } from './io/io.module';
 import { ModuleConfiguration } from './models/module-configuration';
 import { NavigationModule } from './navigation/navigation.module';
 
 @NgModule({
-  declarations: [
-    
-  ],
+  declarations: [],
   imports: [
     CommonModule,
-    DisplayModule,
-    InputsModule,
+    IoModule,
     NavigationModule
   ],
   exports: [
-    DisplayModule,
-    InputsModule,
+    IoModule,
     NavigationModule
   ]
 })

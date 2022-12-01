@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import {MatMenuModule} from '@angular/material/menu';
+import { RouterModule } from '@angular/router';
 
 import { ListComponent } from './list/list.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { ToolbarComponent } from './toolbar/toolbar.component';
 import { SearchboxComponent } from './searchbox/searchbox.component';
-import { DisplayModule } from '../display/display.module';
-import { RouterModule } from '@angular/router';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import { IoModule } from '../io/io.module';
 
 @NgModule({
   declarations: [
@@ -25,10 +25,10 @@ import { RouterModule } from '@angular/router';
   ],
   imports: [
     CommonModule,
-    DisplayModule,
+    IoModule,
     RouterModule,
-    MatMenuModule,
-    MatButtonModule
+    MatButtonModule,
+    MatMenuModule
   ]
 })
 export class NavigationModule { }

@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, HostBinding } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, HostBinding, Input } from '@angular/core';
+
 import { Action } from '../../models/action';
 
 @Component({
@@ -7,7 +7,7 @@ import { Action } from '../../models/action';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   @Input() iconCollection!: string;
   @Input() iconNameField: string = 'iconName';
   @Input() labelField: string = 'label';
@@ -24,11 +24,8 @@ export class NavbarComponent implements OnInit {
     ].join(' ');
   };
 
-  constructor(
-    private router: Router
-  ) { }
+  constructor() { }
 
-  ngOnInit() { }
   getComponentType(item: Action): string {
     let type: string = 'text';
     if (!item.url || item.url.match(/^(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/)) {
@@ -53,5 +50,4 @@ export class NavbarComponent implements OnInit {
   trackByItem(index: number, item: Action): string {
     return `${item.label} ${item.url}`;
   }
-
 }
