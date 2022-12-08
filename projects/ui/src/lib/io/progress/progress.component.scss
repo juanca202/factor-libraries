@@ -1,6 +1,6 @@
 :host {
-    --track-color: rgba(0, 0, 0, 0.08);
-    --bar-color: var(--primary);
+    --ft-track-color: rgba(0, 0, 0, 0.08);
+    --ft-bar-color: var(--ft-primary-color);
     line-height: 0;
     display: inline-block;
 
@@ -42,7 +42,7 @@
         align-items: center;
         justify-content: center;
         pointer-events: none;
-        z-index: var(--z-index-modal, 1000);
+        z-index: var(--ft-z-index-modal, 1000);
         top: 0;
         left: 0;
         right: 0;
@@ -56,10 +56,10 @@
                 0 1px 8px 0 rgba(0, 0, 0, 0.12);
             border-radius: 100vh;
             padding: 0.3125rem;
-            animation: progress-reveal 0.2s;
+            animation: ft-progress-reveal 0.2s;
             animation-fill-mode: forwards;
 
-            .track {
+            .ft-track {
                 display: none;
             }
         }
@@ -74,17 +74,17 @@ svg {
     .ft-track {
         fill: none;
         stroke-width: 10;
-        stroke: var(--track-color);
+        stroke: var(--ft-track-color);
     }
 
     .ft-bar {
         fill: none;
         stroke-opacity: 0.9;
         stroke-width: 6;
-        stroke: var(--bar-color);
+        stroke: var(--ft-bar-color);
 
         &.ft-bar--indeterminate {
-            animation: progress-rotation 2s infinite linear;
+            animation: ft-progress-rotation 2s infinite linear;
         }
 
         &.ft-bar--determinate {
@@ -93,7 +93,7 @@ svg {
     }
 }
 
-@keyframes progress-reveal {
+@keyframes ft-progress-reveal {
     0% {
         transform: translateY(-100%);
         opacity: 0;
@@ -105,7 +105,7 @@ svg {
     }
 }
 
-@keyframes progress-rotation {
+@keyframes ft-progress-rotation {
     0% {
         stroke-dashoffset: 0;
         stroke-dasharray: 150.6 100.4;

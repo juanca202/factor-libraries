@@ -1,13 +1,10 @@
-.mat-dialog-title {
+.mat-mdc-dialog-title {
     display: flex;
     align-items: center;
-
-    ft-icon {
-        margin-right: 0.5rem;
-    }
+    gap: 0.5rem;
 }
 
-.mat-dialog-content {
+.mat-mdc-dialog-content {
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
@@ -17,7 +14,7 @@
     }
 }
 
-.mat-dialog-actions {
+.mat-mdc-dialog-actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
