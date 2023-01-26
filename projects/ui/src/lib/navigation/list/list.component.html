@@ -1,52 +1,48 @@
-<ng-container *ngTemplateOutlet="switch; context: { children: items }"></ng-container>
-<ng-template #switch let-children="children" let-level="level">
-  <ng-container *ngFor="let item of children" [ngSwitch]="item.type">
+<ng-container *ngTemplateOutlet="switchTemplate; context: { children: items }"></ng-container>
+<ng-template #switchTemplate let-children="children" let-level="level">
+  <ng-container *ngFor="let action of children; trackBy: trackById" [ngSwitch]="action.type">
     <ng-container *ngSwitchCase="'collapsible'">
-      <ng-container *ngTemplateOutlet="collapsible; context: { item: item }"></ng-container>
+      <ng-container *ngTemplateOutlet="collapsibleTemplate; context: { action: action }"></ng-container>
     </ng-container>
     <ng-container *ngSwitchCase="'header'">
-      <ng-container *ngTemplateOutlet="header; context: { item: item }"></ng-container>
+      <ng-container *ngTemplateOutlet="headerTemplate; context: { action: action }"></ng-container>
     </ng-container>
     <ng-container *ngSwitchDefault>
-      <ng-container *ngTemplateOutlet="action; context: { item: item }"></ng-container>
+      <ng-container *ngTemplateOutlet="actionTemplate; context: { action: updateAction(action) }"></ng-container>
     </ng-container>
   </ng-container>
 </ng-template>
-<ng-template #action let-item="item">
-  <ng-container [ngSwitch]="getComponentType(item)">
-    <button *ngSwitchCase="'button'" type="button" matRipple class="ft-list__item" [ngClass]="item.class"
-      (click)="setItem(item)">
-      <ng-container *ngTemplateOutlet="text; context: { item: item }"></ng-container>
+<ng-template #actionTemplate let-action="action">
+  <ng-container [ngSwitch]="action.metadata.componentType">
+    <button *ngSwitchCase="'button'" type="button" class="ft-button ft-list__item"
+      [ngClass]="[action.class || '', selectable && selection.indexOf(action) !== -1 ? 'ft-list__item--selected' : '']"
+      (click)="handleClick(action)" [disabled]="action.disabled">
+      <ng-container *ngTemplateOutlet="itemTemplate || textTemplate; context: { action: action }"></ng-container>
     </button>
-    <a *ngSwitchCase="'link'" [routerLink]="item.url" routerLinkActive="ft-active" matRipple class="ft-list__item"
-      [ngClass]="item.class" (click)="setItem(item)">
-      <ng-container *ngTemplateOutlet="text; context: { item: item }"></ng-container>
+    <a *ngSwitchCase="'link'" [routerLink]="action.url" [queryParams]="action.metadata?.queryParams"
+      routerLinkActive="ft-list__item--active" class="ft-button ft-list__item"
+      [ngClass]="[action.class || '', selectable && selection.indexOf(action) !== -1 ? 'ft-list__item--selected' : '']"
+      (click)="handleClick(action)">
+      <ng-container *ngTemplateOutlet="itemTemplate || textTemplate; context: { action: action }"></ng-container>
     </a>
   </ng-container>
 </ng-template>
-<ng-template #collapsible let-item="item">
-  <button type="button" matRipple class="ft-collapsible-header ft-list__item"
-    [ngClass]="{ 'ft-show': item.metadata?.show }" (click)="toggleCollapsible(item)">
-    <div class="ft-item">
-      <ft-icon class="ft-item__icon" *ngIf="item[iconNameField]" [name]="item[iconNameField]"
-        [collection]="iconCollection" [path]="iconPath"></ft-icon>
-      <div class="ft-item__label">{{ item[labelField] }}</div>
-      <ft-icon class="ft-item__toggle" name="angle-right" size="1"></ft-icon>
+<ng-template #collapsibleTemplate let-action="action">
+  <ft-collapsible [header]="action[labelField]" [expanded]="action.metadata?.show">
+    <div class="ft-list">
+      <ng-container *ngTemplateOutlet="switchTemplate; context: { children: action.children }"></ng-container>
     </div>
-  </button>
-  <div class="ft-collapsible" [ngClass]="{ 'ft-show': item.metadata?.show }" *ngIf="item.children">
-    <ng-container *ngTemplateOutlet="switch; context: { children: item.children }"></ng-container>
+  </ft-collapsible>
+</ng-template>
+<ng-template #headerTemplate let-action="action">
+  <div class="ft-list__header" [ngClass]="action.class">
+    {{ action[labelField] }}
   </div>
 </ng-template>
-<ng-template #header let-item="item">
-  <div class="ft-header" [ngClass]="item.class">
-    {{ item[labelField] }}
-  </div>
-</ng-template>
-<ng-template #text let-item="item">
+<ng-template #textTemplate let-action="action">
   <div class="ft-item">
-    <ft-icon class="ft-item__icon" *ngIf="item[iconNameField]" [name]="item[iconNameField]" [collection]="iconCollection"
-      [path]="iconPath"></ft-icon>
-    <div class="ft-item__label">{{ item[labelField] }}</div>
+    <ft-icon class="ft-item__icon" *ngIf="action[iconNameField] || (selectable && selection.indexOf(action) !== -1)"
+      [name]="action[iconNameField]" [collection]="iconCollection" [path]="iconPath"></ft-icon>
+    <div class="ft-item__label">{{ action[labelField] }}</div>
   </div>
 </ng-template>

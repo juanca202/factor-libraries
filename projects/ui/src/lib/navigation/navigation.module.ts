@@ -5,27 +5,23 @@ import {MatMenuModule} from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
 
 import { ListComponent } from './list/list.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { SearchboxComponent } from './searchbox/searchbox.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { IoModule } from '../io/io.module';
+import { LayoutModule } from '../layout/layout.module';
 
 @NgModule({
   declarations: [
     ListComponent,
-    NavbarComponent,
-    ToolbarComponent,
-    SearchboxComponent
+    ToolbarComponent
   ],
   exports: [
     ListComponent,
-    NavbarComponent,
-    ToolbarComponent,
-    SearchboxComponent
+    ToolbarComponent
   ],
   imports: [
     CommonModule,
     IoModule,
+    LayoutModule,
     RouterModule,
     MatButtonModule,
     MatMenuModule

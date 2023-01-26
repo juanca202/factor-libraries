@@ -2,14 +2,14 @@
     <ng-container *ngTemplateOutlet="!readOnly? buttonTemplate : starTemplate; context:{star:star}"></ng-container>
 </ng-container>
 <ng-template #buttonTemplate let-star="star">
-    <button type="button" *ngIf="!readOnly; else starTemplate" [disabled]="disabled"
+    <button type="button" class="ft-rating__item" *ngIf="!readOnly; else starTemplate" [disabled]="disabled"
         (mouseover)="setRate(star.value, true)" (focus)="setRate(star.value, true)" (blur)="setRate(0, true)"
         (mouseout)="setRate(0, true)" (click)="setRate(star.value)">
         <ng-container *ngTemplateOutlet="starTemplate; context:{star:star}"></ng-container>
     </button>
 </ng-template>
 <ng-template #starTemplate let-star="star">
-    <svg [ngClass]="{hover: hoverValue >= star.value, active: value >= star.value}" viewBox="0 0 24 24">
+    <svg [ngClass]="{'ft-rating__item-icon--hover': hoverValue >= star.value, 'ft-rating__item-icon--active': value >= star.value}" viewBox="0 0 24 24">
         <path
             d="M17.93 21.315c-.534.408-5.22-3.186-5.881-3.181-.663 0-5.307 3.656-5.846 3.254-.537-.403 1.29-6.165 1.081-6.822-.209-.656-4.972-4.138-4.772-4.796.201-.658 6.015-.627 6.55-1.036.533-.41 2.233-6.215 2.895-6.219.663 0 2.43 5.779 2.968 6.182.539.403 6.352.297 6.56.953.21.656-4.513 4.197-4.714 4.856-.2.658 1.692 6.398 1.159 6.808z" />
     </svg>

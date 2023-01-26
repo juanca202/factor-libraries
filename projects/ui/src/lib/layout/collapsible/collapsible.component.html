@@ -1,0 +1,9 @@
+<button type="button" class="ft-button ft-collapsible__header" (click)="toggleCollapsible()">
+    <div class="ft-item">
+        <div class="ft-item__label">{{ header }}</div>
+        <ft-icon class="ft-item__toggle" name="angle-down"></ft-icon>
+    </div>
+</button>
+<div class="ft-collapsible__content">
+    <ng-content></ng-content>
+</div>

@@ -3,15 +3,13 @@ import { UiConfiguration } from '../../models/ui-configuration';
 
 @Component({
   selector: 'ft-icon',
-  templateUrl: './icon.component.html',
-  styleUrls: ['./icon.component.scss']
+  templateUrl: './icon.component.html'
 })
 export class IconComponent {
   _collection!: string;
   _name!: string;
   _mode!: 'inline' | 'external';
   _path!: string;
-  @Input() class: string = '';
   @Input() set collection(collection: string) {
     this._collection = collection;
     this.update();
@@ -28,9 +26,10 @@ export class IconComponent {
     this._path = path;
     this.update();
   }
-  @Input() size!: string;
   @Input() src!: string;
   url!: string;
+
+  @Input() class: string = '';
   @HostBinding('class') get hostClasses(): string {
     return [
       'ft-icon',

@@ -2,8 +2,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'ft-rating',
-  templateUrl: './rating.component.html',
-  styleUrls: ['./rating.component.scss']
+  templateUrl: './rating.component.html'
 })
 export class RatingComponent {
   disabled: boolean = false;

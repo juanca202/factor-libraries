@@ -1,0 +1,116 @@
+$prefix: ft- !default;
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+// scss-docs-start color-variables
+$blue:    #0d6efd !default;
+$indigo:  #6610f2 !default;
+$purple:  #6f42c1 !default;
+$pink:    #d63384 !default;
+$red:     #dc3545 !default;
+$orange:  #fd7e14 !default;
+$yellow:  #ffc107 !default;
+$green:   #198754 !default;
+$teal:    #20c997 !default;
+$cyan:    #0dcaf0 !default;
+// scss-docs-end color-variables
+
+// scss-docs-start theme-color-variables
+$primary:       $blue !default;
+$secondary:     $gray-600 !default;
+$success:       $green !default;
+$info:          $cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $gray-100 !default;
+$dark:          $gray-900 !default;
+// scss-docs-end theme-color-variables
+
+// scss-docs-start theme-colors-map
+$theme-colors: (
+  "primary":    $primary,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark
+) !default;
+// scss-docs-end theme-colors-map
+
+$spacer: 1rem !default;
+$spacers: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+) !default;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+) !default;
+
+$grid-breakpoints-sm: 576px;
+$grid-breakpoints-md: 768px;
+$grid-breakpoints-lg: 992px;
+$grid-breakpoints-xl: 1200px;
+$grid-breakpoints-xxl: 1400px;
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1320px
+) !default;
+
+$headings-margin-bottom: $spacer * .5 !default;
+$paragraph-margin-bottom: 1rem !default;
+
+// scss-docs-start border-variables
+$border-width:                1px !default;
+$border-widths: (
+  1: 1px,
+  2: 2px,
+  3: 3px,
+  4: 4px,
+  5: 5px
+) !default;
+$border-style:                solid !default;
+$border-color:                $gray-300 !default;
+$border-color-translucent:    rgba($black, .175) !default;
+// scss-docs-end border-variables
+
+// scss-docs-start border-radius-variables
+$border-radius:               .375rem !default;
+$border-radius-sm:            .25rem !default;
+$border-radius-lg:            .5rem !default;
+$border-radius-xl:            1rem !default;
+$border-radius-2xl:           2rem !default;
+$border-radius-pill:          50rem !default;
+// scss-docs-end border-radius-variables
+
+// scss-docs-start box-shadow-variables
+$box-shadow:                  0 .5rem 1rem rgba(var(--#{$prefix}text-color-rgb), .15) !default;
+$box-shadow-sm:               0 .125rem .25rem rgba(var(--#{$prefix}text-color-rgb), .075) !default;
+$box-shadow-lg:               0 1rem 3rem rgba(var(--#{$prefix}text-color-rgb), .175) !default;
+$box-shadow-inset:            inset 0 1px 2px rgba(var(--#{$prefix}text-color-rgb), .075) !default;
+// scss-docs-end box-shadow-variables

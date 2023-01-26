@@ -12,7 +12,6 @@ import { ProgressComponent } from './progress/progress.component';
 import { RatingComponent } from './rating/rating.component';
 import { ObserveIntersectingDirective } from './observe-intersecting.directive';
 import { TimelineComponent } from './timeline/timeline.component';
-import { ListviewComponent } from './listview/listview.component';
 import { MessageContentComponent } from './message-content/message-content.component';
 import { ExpressionBuilderComponent } from './expression-builder/expression-builder.component';
 
@@ -26,7 +25,6 @@ import { ExpressionBuilderComponent } from './expression-builder/expression-buil
     RatingComponent,
     ObserveIntersectingDirective,
     TimelineComponent,
-    ListviewComponent,
     MessageContentComponent,
     ExpressionBuilderComponent
   ],
@@ -45,7 +43,6 @@ import { ExpressionBuilderComponent } from './expression-builder/expression-buil
     RatingComponent,
     ObserveIntersectingDirective,
     TimelineComponent,
-    ListviewComponent,
     MessageContentComponent,
     ExpressionBuilderComponent
   ]

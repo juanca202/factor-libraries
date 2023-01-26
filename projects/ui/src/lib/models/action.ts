@@ -11,5 +11,4 @@ export interface Action {
     type?: string;
     metadata?: any;
     value?: any;
-    color?: string;
 }

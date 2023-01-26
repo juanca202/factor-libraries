@@ -4,8 +4,7 @@ import { ColorService } from '@factor_ec/utils';
 
 @Component({
   selector: 'ft-avatar',
-  templateUrl: './avatar.component.html',
-  styleUrls: ['./avatar.component.scss']
+  templateUrl: './avatar.component.html'
 })
 export class AvatarComponent {
   _label!: string;
@@ -13,7 +12,6 @@ export class AvatarComponent {
   @Input() color!: string;
   initials!: string;
   loaded!: boolean;
-  @Input() class: string = '';
   @Input() set src(value: string | undefined) {
     if (value && value.trim() != '') {
       this._src = value;
@@ -40,6 +38,7 @@ export class AvatarComponent {
   @HostBinding('style.background-image') get backgroundImage(): string {
     return this._src ? `url(${this._src})` : '';
   }
+  @Input() class: string = '';
   @HostBinding('class') get hostClasses(): string {
     return [
       'ft-avatar',

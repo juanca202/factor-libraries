@@ -1,12 +1,11 @@
 <h1 mat-dialog-title class="ft-message__title" *ngIf="data.options?.title">
     <ft-icon *ngIf="data.options?.titleIcon" [name]="data.options?.titleIcon?.name"
-        [collection]="data.options?.titleIcon?.collection" [ngClass]="data.options?.titleIcon?.class"
-        [size]="data.options?.titleIcon?.size || 2"></ft-icon>
+        [collection]="data.options?.titleIcon?.collection" [ngClass]="data.options?.titleIcon?.class"></ft-icon>
     <div>{{ data.options?.title }}</div>
 </h1>
 <div mat-dialog-content class="ft-message__content" [ngClass]="data.options?.class">
     <ft-icon *ngIf="data.options?.icon" [name]="data.options?.icon?.name" [collection]="data.options?.icon?.collection"
-        [ngClass]="data.options?.icon?.class" [size]="data.options?.icon?.size || 2"></ft-icon>
+        [ngClass]="data.options?.icon?.class"></ft-icon>
     <ng-container [ngSwitch]="data.message?.type">
         <div *ngSwitchCase="'html'" [innerHTML]="data.message?.content"></div>
         <ng-container *ngSwitchDefault>{{ data.message?.content }}</ng-container>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchboxComponent } from './searchbox.component';
+import { ListComponent } from './list.component';
 
-describe('SearchboxComponent', () => {
-  let component: SearchboxComponent;
-  let fixture: ComponentFixture<SearchboxComponent>;
+describe('ListComponent', () => {
+  let component: ListComponent;
+  let fixture: ComponentFixture<ListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SearchboxComponent ]
+      declarations: [ ListComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SearchboxComponent);
+    fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
