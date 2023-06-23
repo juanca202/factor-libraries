@@ -76,8 +76,6 @@ export class StorageService {
             sessionStorage[key] = valueString;
             break;
         }
-      } else {
-        //storage[key] = valueEncrypted;
       }
     }
   }

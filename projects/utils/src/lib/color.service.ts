@@ -58,11 +58,11 @@ export class ColorService {
   };
 
   /**
- * Convert RGB Array to HEX
- *
- * @param RGBArray - [R, G, B]
- * @returns 6 digits hex starting with #
- */
+   * Convert RGB Array to HEX
+   *
+   * @param RGBArray - [R, G, B]
+   * @returns 6 digits hex starting with #
+   */
   rgb2hex(RGBArray: number[]): string {
     let hex = '#';
     RGBArray.forEach(function (value) {

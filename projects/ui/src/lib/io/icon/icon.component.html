@@ -1,6 +1,0 @@
-<svg *ngIf="!src; else imageTemplate">
-  <use attr.xlink:href="{{ url }}" attr.href="{{ url }}" />
-</svg>
-<ng-template #imageTemplate>
-  <img [src]="src" />
-</ng-template>
