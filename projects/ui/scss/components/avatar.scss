@@ -1,0 +1,15 @@
+.ft-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: var(--ft-avatar-bg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: calc(var(--ft-avatar-size) / 2);
+    font-size: calc(var(--ft-avatar-size) - (var(--ft-avatar-size) * 0.6));
+    min-width: var(--ft-avatar-size);
+    min-height: var(--ft-avatar-size);
+    cursor: default;
+    user-select: none;
+}

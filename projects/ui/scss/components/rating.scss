@@ -1,0 +1,61 @@
+.ft-rating {
+    line-height: 0;
+    display: inline-flex;
+    &:hover {
+        &__item {
+            color: var(--ft-primary-color);
+            & svg:not(.ft-rating__item-icon--hover) {
+                color: var(--gray);
+            }
+        }
+    }
+    &--1 {
+        font-size: 1rem;
+    }
+    &--2 {
+        font-size: 1.5rem;
+    }
+    &--3 {
+        font-size: 2rem;
+    }
+    &--4 {
+        font-size: 3rem;
+    }
+    &--5 {
+        font-size: 4.5rem;
+    }
+    &--6 {
+        font-size: 8rem;
+    }
+    &--7 {
+        font-size: 16rem;
+    }
+    &--8 {
+        font-size: 32rem;
+    }
+    svg {
+        width: 1em;
+        height: 1em;
+        display: block;
+        path {
+            fill: none;
+            stroke-width: 1;
+            stroke: currentColor;
+        }
+        &.ft-rating__item-icon--hover,
+        &.ft-rating__item-icon--active {
+            path {
+                fill: currentColor;
+            }
+        }
+    }
+    &__item {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        &:focus,
+        &:active {
+            outline: none;
+        }
+    }
+}

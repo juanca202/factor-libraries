@@ -2,6 +2,12 @@
  * Public API Surface of ui
  */
 
-export * from './lib/ui.service';
-export * from './lib/ui.component';
-export * from './lib/ui.module';
+export * from './lib/io/avatar/avatar.component';
+export * from './lib/io/icon/icon.component';
+export * from './lib/io/image/image.component';
+export * from './lib/io/progress/progress.component';
+export * from './lib/io/rating/rating.component';
+export * from './lib/io/timeline/timeline.component';
+export * from './lib/observe-intersecting.directive';
+export * from './lib/message.service';
+export * from './lib/progress.service';
