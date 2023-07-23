@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostBinding, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { IconComponent } from '../icon/icon.component';
 
 @Component({

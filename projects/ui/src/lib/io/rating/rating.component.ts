@@ -1,13 +1,21 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'ft-rating',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './rating.component.html'
+  templateUrl: './rating.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: RatingComponent,
+      multi: true
+    }
+  ]
 })
-export class RatingComponent {
+export class RatingComponent implements ControlValueAccessor {
   disabled: boolean = false;
   hoverValue!: number;
   propagateChange = (_: any) => { };

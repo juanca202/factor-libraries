@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { MessageOptions } from './models/message-options';
 import { MessageContent } from './models/message-content';
-import { MessageContentComponent } from './io/message-content/message-content.component';
-import { MessageDialogComponent } from './io/message-dialog/message-dialog.component';
+import { MessageContentComponent } from './message-content/message-content.component';
+import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +21,8 @@ export class MessageService {
   ) { }
 
   show(message: string | MessageContent, options?: MessageOptions): Observable<any> {
-    let selectionSource: ReplaySubject<string> = new ReplaySubject<string>(undefined);
-    let selection: Observable<string> = selectionSource.asObservable();
+    const selectionSource: ReplaySubject<string> = new ReplaySubject<string>(undefined);
+    const selection: Observable<string> = selectionSource.asObservable();
     const defaults: MessageOptions = {
       type: 'notification',
       duration: 2000,
@@ -30,17 +30,19 @@ export class MessageService {
     };
     options = Object.assign(defaults, options);
     const data = { message: typeof message === 'string' ? { content: message, type: 'text' } : message, options };
+    let dialogRef: MatDialogRef<MessageDialogComponent>;
     switch (options.type) {
       default:
       case 'notification':
         this.snackBar.openFromComponent(MessageContentComponent, {
           data,
-          panelClass: ['ft-message', 'ft-message--notification'],
+          panelClass: ['ft-message', 'ft-message--notification', options.class || ''],
           duration: options.duration || 2000,
+          verticalPosition: options.verticalPosition || 'bottom'
         });
         break;
       case 'modal':
-        const dialogRef = this.dialog.open(MessageDialogComponent, {
+        dialogRef = this.dialog.open(MessageDialogComponent, {
           width: options.width || '350px',
           data,
           panelClass: ['ft-message', 'ft-message--modal'],

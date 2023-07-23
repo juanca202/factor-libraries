@@ -16,11 +16,11 @@
         <ng-container *ngFor="let action of data.options?.actions; let i = index">
             <ng-container [ngSwitch]="action.type">
                 <button type="button" *ngSwitchCase="'raised'" mat-raised-button [color]="action.metadata?.color"
-                    (click)="select(action.value)" autofocus>{{ action.label }}</button>
+                    (click)="select(action.value)">{{ action.label }}</button>
                 <button type="button" *ngSwitchCase="'flat'" mat-flat-button [color]="action.metadata?.color"
-                    (click)="select(action.value)" autofocus>{{ action.label }}</button>
+                    (click)="select(action.value)">{{ action.label }}</button>
                 <button type="button" *ngSwitchCase="'stroked'" mat-stroked-button [color]="action.metadata?.color"
-                    (click)="select(action.value)" autofocus>{{ action.label }}</button>
+                    (click)="select(action.value)">{{ action.label }}</button>
                 <button type="button" *ngSwitchDefault mat-button [color]="action.metadata?.color"
                     (click)="select(action.value)">{{ action.label }}</button>
             </ng-container>
@@ -28,5 +28,5 @@
     </ng-container>
 </div>
 <ng-template #acceptTemplate>
-    <button type="button" mat-stroked-button color="primary" autofocus (click)="select('-1')" i18n>Accept</button>
+    <button type="button" mat-stroked-button color="primary" (click)="select('-1')" i18n>Accept</button>
 </ng-template>

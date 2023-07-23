@@ -1,14 +1,12 @@
-import { Action } from "./action";
-import { Icon } from "./icon";
-
 export interface MessageOptions {
     type?: 'modal' | 'notification';
-    actions?: Action[];
+    actions?: any[];
     actionsVisible?: boolean;
     class?: string;
     duration?: number;
     title?: string;
-    titleIcon?: Icon;
-    icon?: Icon;
+    titleIcon?: any;
+    icon?: any;
     width?: string;
+    verticalPosition?: 'top' | 'bottom'
 }

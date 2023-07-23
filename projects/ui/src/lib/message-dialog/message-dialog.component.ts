@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '../io/icon/icon.component';
 
 @Component({
   selector: 'ft-message-dialog',
@@ -21,9 +21,7 @@ export class MessageDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
-
-  ngOnInit() {
-  }
+  
   select(value: string) {
     this.beforeSelect.emit(value);
   }

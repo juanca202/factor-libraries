@@ -1,5 +1,6 @@
 import { Component, HostBinding, Inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { UiConfiguration } from '../../models/ui-configuration';
 
 @Component({
