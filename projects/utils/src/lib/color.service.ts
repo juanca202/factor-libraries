@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ColorService {
   L: number[];
   S: number[];
-  hueRanges: { min: number, max: number }[];
+  hueRanges: { min: number; max: number }[];
 
   constructor() {
     const options: any = {};
@@ -27,10 +27,13 @@ export class ColorService {
     if (typeof options.hue === 'undefined') {
       options.hue = [];
     }
-    this.hueRanges = options.hue.map(function (range: { min: number, max: number }) {
+    this.hueRanges = options.hue.map(function (range: {
+      min: number;
+      max: number;
+    }) {
       return {
         min: typeof range.min === 'undefined' ? 0 : range.min,
-        max: typeof range.max === 'undefined' ? 360 : range.max
+        max: typeof range.max === 'undefined' ? 360 : range.max,
       };
     });
   }
@@ -55,7 +58,7 @@ export class ColorService {
       hash = hash * seed + str.charCodeAt(i);
     }
     return hash;
-  };
+  }
 
   /**
    * Convert RGB Array to HEX
@@ -72,7 +75,7 @@ export class ColorService {
       hex += value.toString(16);
     });
     return hex;
-  };
+  }
 
   /**
    * Convert HSL to RGB
@@ -107,8 +110,7 @@ export class ColorService {
       }
       return Math.round(color * 255);
     });
-  };
-
+  }
 
   /**
    * Returns the hash in [h, s, l].
@@ -126,7 +128,11 @@ export class ColorService {
     if (this.hueRanges.length) {
       let range = this.hueRanges[hash % this.hueRanges.length];
       let hueResolution = 727; // note that 727 is a prime
-      H = ((hash / this.hueRanges.length) % hueResolution) * (range.max - range.min) / hueResolution + range.min;
+      H =
+        (((hash / this.hueRanges.length) % hueResolution) *
+          (range.max - range.min)) /
+          hueResolution +
+        range.min;
     } else {
       H = hash % 359; // note that 359 is a prime
     }
@@ -136,7 +142,7 @@ export class ColorService {
     L = this.L[hash % this.L.length];
 
     return [H, S, L];
-  };
+  }
 
   /**
    * Returns the hash in [r, g, b].
@@ -148,7 +154,7 @@ export class ColorService {
   rgb(str: string): number[] {
     let hsl = this.hsl(str);
     return this.hsl2rgb(hsl[0], hsl[1], hsl[2]);
-  };
+  }
 
   /**
    * Returns the hash in hex
@@ -159,5 +165,5 @@ export class ColorService {
   hex(str: string): string {
     let rgb = this.rgb(str);
     return this.rgb2hex(rgb);
-  };
+  }
 }

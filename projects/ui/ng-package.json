@@ -3,8 +3,5 @@
   "dest": "../../dist/ui",
   "lib": {
     "entryFile": "src/public-api.ts"
-  },
-  "assets": [
-    "./scss"
-  ]
+  }
 }

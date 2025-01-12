@@ -1,27 +1,25 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Directive, ElementRef, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, input, OnInit, Output, PLATFORM_ID, inject } from '@angular/core';
 
 @Directive({
   selector: '[ftObserveIntersecting]',
   standalone: true
 })
 export class ObserveIntersectingDirective implements OnInit {
-  @Input('ftObserveIntersectingOptions') options!: { root?: any, rootMargin?: any, threshold?: any };
-  @Output('ftObserveIntersecting') event: EventEmitter<boolean> = new EventEmitter();
+  private element = inject(ElementRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
-  constructor(
-    private element: ElementRef,
-    @Inject(PLATFORM_ID) private readonly platformId: object = {}
-  ) { }
+  ftObserveIntersectingOptions = input<{ root?: HTMLElement, rootMargin?: string, threshold?: number | number[] }>();
+  @Output('ftObserveIntersecting') event: EventEmitter<boolean> = new EventEmitter();
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       if ("IntersectionObserver" in window) {
-        const elementObserver = new IntersectionObserver((entries, observer) => {
+        const elementObserver = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             this.event.emit(entry.isIntersecting);
           });
-        }, this.options);
+        }, this.ftObserveIntersectingOptions());
         elementObserver.observe(this.element.nativeElement);
       } else {
         console.error('ftObserveIntersecting not available in this browser.');

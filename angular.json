@@ -3,39 +3,6 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "utils": {
-      "projectType": "library",
-      "root": "projects/utils",
-      "sourceRoot": "projects/utils/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/utils/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/utils/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/utils/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/utils/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
-          }
-        }
-      }
-    },
     "ui": {
       "projectType": "library",
       "root": "projects/ui",
@@ -69,99 +36,35 @@
         }
       }
     },
-    "samples": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "root": "projects/samples",
-      "sourceRoot": "projects/samples/src",
-      "prefix": "app",
+    "utils": {
+      "projectType": "library",
+      "root": "projects/utils",
+      "sourceRoot": "projects/utils/src",
+      "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "outputPath": "dist/samples",
-            "index": "projects/samples/src/index.html",
-            "main": "projects/samples/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "projects/samples/tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/samples/src/favicon.ico",
-              "projects/samples/src/assets"
-            ],
-            "styles": [
-              "projects/samples/src/styles.scss"
-            ],
-            "scripts": []
+            "project": "projects/utils/ng-package.json"
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "outputHashing": "all"
+              "tsConfig": "projects/utils/tsconfig.lib.prod.json"
             },
             "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "tsConfig": "projects/utils/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
         },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "browserTarget": "samples:build:production"
-            },
-            "development": {
-              "browserTarget": "samples:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "samples:build"
-          }
-        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "tsConfig": "projects/utils/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
-            ],
-            "tsConfig": "projects/samples/tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/samples/src/favicon.ico",
-              "projects/samples/src/assets"
-            ],
-            "styles": [
-              "projects/samples/src/styles.scss"
-            ],
-            "scripts": []
+            ]
           }
         }
       }

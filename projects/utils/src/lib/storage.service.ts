@@ -2,15 +2,13 @@ import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageService {
   //TODO: Replace with Map object it is more efficient
   memoryStorage: any;
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   private getValue(key: string, storage?: 'local' | 'session' | 'memory'): any {
     let value: any;
@@ -61,7 +59,11 @@ export class StorageService {
     }
     return parsedValue;
   }
-  public set(key: string, value: any, storage?: 'local' | 'session' | 'memory') {
+  public set(
+    key: string,
+    value: any,
+    storage?: 'local' | 'session' | 'memory'
+  ) {
     if (isPlatformBrowser(this.platformId)) {
       const valueString = JSON.stringify(value);
       if (!storage || typeof storage == 'string') {

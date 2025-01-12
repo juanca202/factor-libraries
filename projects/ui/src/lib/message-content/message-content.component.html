@@ -1,4 +1,0 @@
-<ng-container [ngSwitch]="data.message?.type">
-    <div *ngSwitchCase="'html'" [innerHTML]="data.message?.content"></div>
-    <ng-container *ngSwitchDefault>{{ data.message?.content }}</ng-container>
-</ng-container>

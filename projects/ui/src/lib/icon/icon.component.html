@@ -1,0 +1,7 @@
+@if (!src()) {
+<svg>
+    <use attr.href="{{ url() }}" />
+</svg>
+} @else {
+<img [src]="src()" alt="" />
+}
