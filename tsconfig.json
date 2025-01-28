@@ -17,11 +17,12 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
+    "forceConsistentCasingInFileNames": true,
     "paths": {
-      "ui": [
+      "@factor_ec/ui": [
         "./dist/ui"
       ],
-      "utils": [
+      "@factor_ec/utils": [
         "./dist/utils"
       ]
     }

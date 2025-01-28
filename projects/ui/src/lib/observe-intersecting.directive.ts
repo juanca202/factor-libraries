@@ -1,22 +1,35 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Directive, ElementRef, EventEmitter, input, OnInit, Output, PLATFORM_ID, inject } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  input,
+  OnInit,
+  PLATFORM_ID,
+  inject,
+  output,
+  OutputEmitterRef,
+} from '@angular/core';
 
 @Directive({
   selector: '[ftObserveIntersecting]',
-  standalone: true
+  standalone: true,
 })
 export class ObserveIntersectingDirective implements OnInit {
   private element = inject(ElementRef);
   private readonly platformId = inject(PLATFORM_ID);
 
-  ftObserveIntersectingOptions = input<{ root?: HTMLElement, rootMargin?: string, threshold?: number | number[] }>();
-  @Output('ftObserveIntersecting') event: EventEmitter<boolean> = new EventEmitter();
+  ftObserveIntersectingOptions = input<{
+    root?: HTMLElement;
+    rootMargin?: string;
+    threshold?: number | number[];
+  }>();
+  readonly event: OutputEmitterRef<boolean> = output({ alias: 'ftObserveIntersecting' });
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      if ("IntersectionObserver" in window) {
+      if ('IntersectionObserver' in window) {
         const elementObserver = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
+          entries.forEach((entry: IntersectionObserverEntry) => {
             this.event.emit(entry.isIntersecting);
           });
         }, this.ftObserveIntersectingOptions());

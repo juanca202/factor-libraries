@@ -1,7 +1,7 @@
 import { Component, computed, effect, HostBinding, input, signal, inject } from '@angular/core';
 
 
-import { ColorService } from '../../utils/color.service';
+import { ColorService } from '@factor_ec/utils';
 
 @Component({
     selector: 'ft-avatar',

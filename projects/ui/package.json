@@ -1,6 +1,6 @@
 {
-  "name": "ui",
-  "version": "5.0.0",
+  "name": "@factor_ec/ui",
+  "version": "5.0.1",
   "license": "CC-BY-NC-ND-4.0",
   "author": "Factor",
   "peerDependencies": {
