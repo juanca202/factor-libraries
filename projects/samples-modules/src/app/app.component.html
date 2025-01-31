@@ -1,4 +1,7 @@
-<button type="button">
+<button type="button" (click)="attach()">
   <ft-icon name="plus" />
   <div>Add</div>
 </button>
+
+<div (ftObserveIntersecting)="setTopOverlapped($event)"
+[ftObserveIntersectingOptions]="{rootMargin: '-52px', threshold: 0}">Hola</div>

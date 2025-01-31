@@ -1,4 +1,10 @@
-import { Component, Injectable, OutputEmitterRef, inject, output } from '@angular/core';
+import {
+  Component,
+  Injectable,
+  OutputEmitterRef,
+  inject,
+  output,
+} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -161,13 +167,22 @@ export class MessageService {
     switch (options.type) {
       default:
       case 'notification':
-        this.snackBar.openFromComponent(MessageContentComponent, {
-          data,
-          panelClass: ['ft-message', 'ft-message--notification'],
-          duration: this.stringService.calculateReadingTime(
-            typeof message === 'string' ? message : message.content
-          ),
-          verticalPosition: options.verticalPosition || 'bottom',
+        const snackBarRef = this.snackBar.openFromComponent(
+          MessageContentComponent,
+          {
+            data,
+            panelClass: ['ft-message', 'ft-message--notification'],
+            duration: Math.min(
+              this.stringService.calculateReadingTime(
+                typeof message === 'string' ? message : message.content
+              ),
+              30000
+            ),
+            verticalPosition: options.verticalPosition || 'bottom',
+          }
+        );
+        snackBarRef.onAction().subscribe(() => {
+          snackBarRef.dismiss();
         });
         break;
       case 'modal':

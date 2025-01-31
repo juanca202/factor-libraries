@@ -5,6 +5,7 @@ import { IconComponent } from './icon/icon.component';
 import { ImageComponent } from './image/image.component';
 import { ProgressComponent } from './progress/progress.component';
 import { RatingComponent } from './rating/rating.component';
+import { ObserveIntersectingDirective } from './observe-intersecting.directive';
 
 @NgModule({
   declarations: [],
@@ -14,14 +15,16 @@ import { RatingComponent } from './rating/rating.component';
     IconComponent,
     ImageComponent,
     ProgressComponent,
-    RatingComponent
+    RatingComponent,
+    ObserveIntersectingDirective
   ],
   exports: [
     AvatarComponent,
     IconComponent,
     ImageComponent,
     ProgressComponent,
-    RatingComponent
+    RatingComponent,
+    ObserveIntersectingDirective
   ]
 })
 export class UiModule { }

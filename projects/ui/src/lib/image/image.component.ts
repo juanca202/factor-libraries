@@ -18,6 +18,7 @@ export class ImageComponent {
   @HostBinding('class.ft-image--error') error!: boolean;
   @HostBinding('class.ft-image--loading') loading: boolean = false;
   readonly src = input.required<string>();
+  readonly alt = input<string>('');
   shown: boolean = false;
 
   ngOnInit() {

@@ -17,13 +17,12 @@ import {
 export class ObserveIntersectingDirective implements OnInit {
   private element = inject(ElementRef);
   private readonly platformId = inject(PLATFORM_ID);
-
-  ftObserveIntersectingOptions = input<{
+  public ftObserveIntersectingOptions = input<{
     root?: HTMLElement;
     rootMargin?: string;
     threshold?: number | number[];
   }>();
-  readonly event: OutputEmitterRef<boolean> = output({ alias: 'ftObserveIntersecting' });
+  public readonly event: OutputEmitterRef<boolean> = output({ alias: 'ftObserveIntersecting' });
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {

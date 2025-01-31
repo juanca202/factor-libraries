@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UiModule, UI_OPTIONS } from '@factor_ec/ui';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { UiModule, UI_OPTIONS } from '@factor_ec/ui';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    UiModule
+    UiModule,
+    MatSnackBarModule
   ],
   providers: [
     {
