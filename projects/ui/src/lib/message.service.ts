@@ -178,7 +178,7 @@ export class MessageService {
               ),
               30000
             ),
-            verticalPosition: options.verticalPosition || 'bottom',
+            verticalPosition: options.verticalPosition || 'top',
           }
         );
         snackBarRef.onAction().subscribe(() => {
