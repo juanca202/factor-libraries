@@ -28,9 +28,14 @@ export class StringService {
     text = text.charAt(0).toUpperCase() + text.slice(1);
     return text;
   }
-  calculateReadingTime(text: string) {
+  /**
+   * Te da el tiempo en milisegundos que toma leer un texto dado
+   * @param text texto a leer
+   * @return number Tiempo en milisegundos
+   */
+  calculateReadingTime(text: string): number {
     // Caracteres por minuto
-    const cpm = 1000;
+    const cpm = 1200;
 
     // Calcular el número de caracteres en el texto
     const numCharacters: number = text.length;

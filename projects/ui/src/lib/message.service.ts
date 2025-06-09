@@ -28,9 +28,11 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
-  imports: [MatSnackBarModule],
+  imports: [MatSnackBarModule, IconComponent],
   template: `
-    @switch (data.message?.type) { @case ('html') {
+    @if (data.options.icon) {
+    <ft-icon [name]="data.options.icon" class="ft-icon--2" />
+    } @switch (data.message?.type) { @case ('html') {
     <div [innerHTML]="data.message?.content"></div>
     } @default {
     {{ data.message?.content }}
@@ -152,7 +154,6 @@ export class MessageService {
     const selection: Observable<string> = selectionSource.asObservable();
     const defaults: MessageOptions = {
       type: 'notification',
-      duration: 2000,
       actionsVisible: true,
     };
     options = Object.assign(defaults, options);
@@ -167,17 +168,23 @@ export class MessageService {
     switch (options.type) {
       default:
       case 'notification':
+        const panelClass = ['ft-message', 'ft-message--notification'];
+        if (options.class) {
+          panelClass.push(options.class);
+        }
         const snackBarRef = this.snackBar.openFromComponent(
           MessageContentComponent,
           {
             data,
-            panelClass: ['ft-message', 'ft-message--notification'],
-            duration: Math.min(
-              this.stringService.calculateReadingTime(
-                typeof message === 'string' ? message : message.content
+            panelClass,
+            duration:
+              options.duration ??
+              Math.min(
+                this.stringService.calculateReadingTime(
+                  typeof message === 'string' ? message : message.content
+                ),
+                30000
               ),
-              30000
-            ),
             verticalPosition: options.verticalPosition || 'top',
           }
         );

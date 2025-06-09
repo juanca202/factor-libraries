@@ -1,6 +1,6 @@
 {
   "name": "@factor_ec/utils",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "license": "CC-BY-NC-ND-4.0",
   "author": "Factor",
   "peerDependencies": {
