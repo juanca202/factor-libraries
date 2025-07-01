@@ -1,15 +1,15 @@
 {
   "name": "@factor_ec/ui",
-  "version": "5.0.7",
+  "version": "5.0.8",
   "license": "CC-BY-NC-ND-4.0",
   "author": "Factor",
   "peerDependencies": {
-    "@angular/common": "^19.0.0",
-    "@angular/core": "^19.0.0",
-    "@angular/localize": "^19.0.0",
-    "@angular/material": "^19.0.4",
+    "@angular/common": ">=19.0.0",
+    "@angular/core": ">=19.0.0",
+    "@angular/localize": ">=19.0.0",
+    "@angular/material": ">=19.0.4",
     "@factor_ec/utils": ">=5.0.0",
-    "d3": "^7.9.0"
+    "d3": ">=7.9.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

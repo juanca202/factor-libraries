@@ -5,7 +5,6 @@ export * from './lib/date.service';
 export * from './lib/files.service'; //Deprecated
 export * from './lib/file-picker.service';
 export * from './lib/google-tag-manager.service';
-export * from './lib/graphql.service';
 export * from './lib/object.service';
 export * from './lib/storage.service';
 export * from './lib/string.service';
