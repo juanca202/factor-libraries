@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FilePickerService {
-  private pickerClosed: boolean = false;
-
   public async open(options?: {
     accept?: string;
     multiple?: boolean;
@@ -13,44 +11,70 @@ export class FilePickerService {
     return new Promise((resolve, reject) => {
       const fileInput = document.createElement('input');
       fileInput.type = 'file';
-      fileInput.addEventListener('change', (event: any) => {
-        this.pickerClosed = true;
-        const files = event.currentTarget.files;
-        if (files && files.length > 0) {
-          let data: any[] = [];
-          for (let i = 0; i < files.length; i++) {
-            const file: any = files.item(i);
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-              data.push(
-                Object.assign(file, {
-                  data: reader.result
-                })
-              );
-              if (data.length == files.length) {
-                fileInput.value = '';
-                resolve(data.length > 0 ? data : null);
-              } else {
-                resolve(null);
-              }
-            };
-          }
+      fileInput.style.display = 'none';
+      if (options?.accept) {
+        fileInput.accept = options.accept;
+      }
+      fileInput.multiple = options?.multiple ?? false;
+      document.body.appendChild(fileInput);
+      let changeHandled = false;
+      const cleanUp = () => {
+        window.removeEventListener('focus', onFocus);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+        if (fileInput.parentNode) {
+          document.body.removeChild(fileInput);
         }
-      });
-      this.pickerClosed = false;
-      // Detectar cuando el usuario vuelve a la ventana después de abrir el picker
+      };
       const onFocus = () => {
         setTimeout(() => {
-          if (!this.pickerClosed) {
-            reject(null);
+          if (!changeHandled) {
+            cleanUp();
+            resolve(null);
           }
-          window.removeEventListener('focus', onFocus);
-        }, 500); // Esperamos un poco para asegurarnos de que onchange haya tenido oportunidad de ejecutarse
+        }, 1500);
       };
+      const onVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+          setTimeout(() => {
+            if (!changeHandled) {
+              cleanUp();
+              resolve(null);
+            }
+          }, 1500);
+        }
+      };
+      fileInput.addEventListener('change', async (event: any) => {
+        changeHandled = true;
+        const files = Array.from(event.target.files || []) as File[];
+        if (!files.length) {
+          cleanUp();
+          resolve(null);
+          return;
+        }
+        try {
+          const result = await Promise.all(
+            files.map(file => {
+              return new Promise((res, rej) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  res(Object.assign(file, { data: reader.result }));
+                };
+                reader.onerror = (err) => {
+                  rej(reader.error);
+                };
+                reader.readAsDataURL(file);
+              });
+            })
+          );
+          cleanUp();
+          resolve(result);
+        } catch (error) {
+          cleanUp();
+          reject(error);
+        }
+      });
       window.addEventListener('focus', onFocus);
-      fileInput.accept = options?.accept ? options.accept : '';
-      fileInput.multiple = options?.multiple || false;
+      document.addEventListener('visibilitychange', onVisibilityChange);
       fileInput.click();
     });
   }
