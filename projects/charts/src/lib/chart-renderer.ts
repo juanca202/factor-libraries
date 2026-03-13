@@ -1,14 +1,11 @@
+import { Injectable } from '@angular/core';
+
 import * as d3 from 'd3';
 import { Selection, ScaleBand, ScaleLinear } from 'd3';
-import { Chart, ChartOptions } from './models/chart';
-import { Injectable } from '@angular/core';
-import { ChartType } from './constants/chart-type';
 
-interface CachedChart {
-  items: Chart[];
-  options?: ChartOptions;
-  yDomain?: [number, number];
-}
+import { ChartType } from './constants/chart-type';
+import { CachedChart } from './models/cached-chart';
+import { Chart, ChartOptions } from './models/chart';
 
 @Injectable({
   providedIn: 'root'

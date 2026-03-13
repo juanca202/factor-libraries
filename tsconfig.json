@@ -15,15 +15,10 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
-      "@factor_ec/ui": [
-        "./projects/ui/src/public-api.ts"
-      ],
-      "@factor_ec/utils": [
-        "./projects/utils/src/public-api.ts"
-      ],
-      "auth-msal": [
-        "./dist/auth-msal"
-      ]
+      "@factor_ec/ui": ["./dist/ui", "./projects/ui/src/public-api.ts"],
+      "@factor_ec/utils": ["./dist/utils", "./projects/utils/src/public-api.ts"],
+      "@factor_ec/msal": ["./dist/msal"],
+      "@factor_ec/charts": ["./dist/charts", "./projects/charts/src/public-api.ts"]
     }
   },
   "angularCompilerOptions": {
@@ -53,10 +48,16 @@
       "path": "./projects/utils/tsconfig.spec.json"
     },
     {
-      "path": "./projects/auth-msal/tsconfig.lib.json"
+      "path": "./projects/msal/tsconfig.lib.json"
     },
     {
-      "path": "./projects/auth-msal/tsconfig.spec.json"
+      "path": "./projects/msal/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/charts/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/charts/tsconfig.spec.json"
     }
   ]
 }

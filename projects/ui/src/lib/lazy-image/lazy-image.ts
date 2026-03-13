@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostBinding, inject, input } from '@angular/core';
-import { Icon } from '@factor_ec/ui';
+import { Icon } from '../icon/icon';
 
 @Component({
   selector: 'ft-lazy-image',

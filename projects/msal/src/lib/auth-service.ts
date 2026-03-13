@@ -1,14 +1,27 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
 import type { AccountInfo } from '@azure/msal-browser';
 
-import { AuthProvider, type User } from 'auth-core';
+import { AuthProvider, type Signup, type User } from '@factor_ec/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService extends AuthProvider {
   private readonly msal = inject(MsalService);
+  private readonly _account = signal<AccountInfo | null>(null);
+
+  override readonly user = computed(() => {
+    const acc = this._account();
+    return acc ? this.mapAccountToUser(acc) : null;
+  });
+
+  override readonly isLoggedIn = computed(() => this._account() !== null);
+
+  constructor() {
+    super();
+    this._account.set(this.msal.instance.getActiveAccount());
+  }
 
   override login(): Promise<boolean> {
     this.msal.loginRedirect();
@@ -20,18 +33,11 @@ export class AuthService extends AuthProvider {
     return Promise.resolve(true);
   }
 
-  override getUser(): User {
-    const acc = this.msal.instance.getActiveAccount();
-    if (!acc) {
-      return {
-        username: '',
-        email: '',
-        roles: [],
-        firstName: '',
-        lastName: '',
-        picture: ''
-      };
-    }
+  get account(): AccountInfo | null {
+    return this.msal.instance.getActiveAccount();
+  }
+
+  private mapAccountToUser(acc: AccountInfo): User {
     return {
       username: acc.username,
       email: (acc.idTokenClaims as Record<string, unknown>)?.['email'] as string ?? acc.username,
@@ -40,18 +46,5 @@ export class AuthService extends AuthProvider {
       lastName: (acc.idTokenClaims as Record<string, unknown>)?.['family_name'] as string ?? '',
       picture: (acc.idTokenClaims as Record<string, unknown>)?.['picture'] as string ?? ''
     };
-  }
-
-  override isLoggedIn(): boolean {
-    return this.msal.instance.getActiveAccount() !== null;
-  }
-
-  get account(): AccountInfo | null {
-    return this.msal.instance.getActiveAccount();
-  }
-
-  changePassword(): void {
-    // Con MSAL/Azure AD, el cambio de contraseña se gestiona en el portal de Microsoft
-    this.msal.loginRedirect();
   }
 }

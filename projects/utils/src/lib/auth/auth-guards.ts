@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 
-import { StorageService } from '@factor_ec/utils';
+import { Storage } from '../storage';
 import { AUTH_CONFIG } from './auth-config.token';
 import { AuthService } from './auth-service';
 
@@ -9,7 +9,7 @@ export const authGuard: CanActivateFn = async (route, state) => {
   const config = inject(AUTH_CONFIG);
   const router = inject(Router);
   const authService = inject(AuthService);
-  const storageService = inject(StorageService);
+  const storageService = inject(Storage);
 
   if (!authService.isLoggedIn()) {
     storageService.set(`${config.sessionPrefix}_rdi`, state.url);

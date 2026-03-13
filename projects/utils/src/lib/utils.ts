@@ -12,7 +12,7 @@ export * from './object-util';
 export * from './storage';
 export * from './string-util';
 
-// Integrations
+// Monitoring
 export * from './monitoring/google-tag-manager';
 
 // Models
@@ -28,3 +28,18 @@ export * from './constants/operation-type';
 export * from './validators/ec/identification-validator';
 export * from './validators/ec/identification-type';
 
+// Auth
+export * from './auth/auth-provider';
+export * from './auth/auth-service';
+export * from './auth/auth-config.token';
+export * from './auth/auth-guards';
+export * from './auth/auth-interceptor';
+export * from './auth/models/auth-config';
+export * from './auth/models/auth-token';
+export * from './auth/models/auth-token-payload';
+export * from './auth/models/fedcm-credential';
+export * from './auth/models/jwt-auth-provider';
+export * from './auth/models/jwt-token-payload';
+export * from './auth/models/login';
+export * from './auth/models/signup';
+export * from './auth/models/user';

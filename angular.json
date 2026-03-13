@@ -24,9 +24,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ]
+            "styles": ["src/styles.css"]
           },
           "configurations": {
             "production": {
@@ -129,20 +127,20 @@
         }
       }
     },
-    "auth-msal": {
+    "msal": {
       "projectType": "library",
-      "root": "projects/auth-msal",
-      "sourceRoot": "projects/auth-msal/src",
+      "root": "projects/msal",
+      "sourceRoot": "projects/msal/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
             "production": {
-              "tsConfig": "projects/auth-msal/tsconfig.lib.prod.json"
+              "tsConfig": "projects/msal/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/auth-msal/tsconfig.lib.json"
+              "tsConfig": "projects/msal/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -150,7 +148,33 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/auth-msal/tsconfig.spec.json"
+            "tsConfig": "projects/msal/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "charts": {
+      "projectType": "library",
+      "root": "projects/charts",
+      "sourceRoot": "projects/charts/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/charts/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/charts/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/charts/tsconfig.spec.json"
           }
         }
       }
