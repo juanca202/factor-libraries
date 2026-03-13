@@ -115,6 +115,18 @@ function storeCodeValidator(number: string): boolean {
     }
     return value;
 }
+/**
+ * Determines the type of Ecuadorian identification number.
+ *
+ * @param number - The identification number to analyze
+ * @returns The identification type ('cedula', 'ruc_natural', 'ruc_privada', 'ruc_publica') or null if invalid
+ *
+ * @example
+ * ```typescript
+ * const type = getIdentificationType('1234567890');
+ * // Returns: 'cedula' or null
+ * ```
+ */
 export function getIdentificationType(number: string): string | null {
     let type: string | null = null;
     if (lengthValidator(number, 10) &&

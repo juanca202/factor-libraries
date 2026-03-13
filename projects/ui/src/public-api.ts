@@ -1,13 +1,27 @@
-export * from './lib/avatar/avatar.component';
-export * from './lib/chart.service';
-export * from './lib/icon/icon.component';
-export * from './lib/image/image.component';
-export * from './lib/message.service';
+/*
+ * Public API Surface of ui
+ */
+
+// Components
+export * from './lib/avatar/avatar';
+export * from './lib/icon/icon';
+export * from './lib/lazy-image/lazy-image';
+export * from './lib/progress/progress';
+export * from './lib/rating/rating';
+
+// Services
+export * from './lib/chart-renderer';
+export * from './lib/message-service';
+export * from './lib/observe-intersecting';
+
+// Models
 export * from './lib/models/chart';
+export * from './lib/models/message-action';
 export * from './lib/models/message-content';
 export * from './lib/models/message-options';
 export * from './lib/models/ui-options';
-export * from './lib/observe-intersecting.directive';
-export * from './lib/progress/progress.component';
-export * from './lib/rating/rating.component';
-export * from './lib/ui.module';
+
+// Constants
+export * from './lib/constants/chart-type';
+export * from './lib/constants/message-position';
+export * from './lib/constants/message-type';

@@ -1,6 +1,10 @@
+import { MessagePosition } from "../constants/message-position";
+import { MessageType } from "../constants/message-type";
+import { MessageAction } from "./message-action";
+
 export interface MessageOptions {
-    type?: 'modal' | 'notification';
-    actions?: any[];
+    type?: MessageType;
+    actions?: MessageAction[];
     actionsVisible?: boolean;
     class?: string;
     duration?: number;
@@ -8,5 +12,5 @@ export interface MessageOptions {
     titleIcon?: any;
     icon?: any;
     width?: string;
-    verticalPosition?: 'top' | 'bottom'
+    verticalPosition?: MessagePosition
 }

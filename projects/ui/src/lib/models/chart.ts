@@ -1,6 +1,14 @@
+import { ChartType } from "../constants/chart-type";
+
+export interface ChartOptions {
+    xAxis?: {
+        visible: boolean
+    }
+}
+
 export interface Chart {
     data: any[];
-    type: string;
+    type: ChartType;
     field: string;
     categoryField: string;
     label?: string;
@@ -8,5 +16,6 @@ export interface Chart {
     domain?: any;
     padding?: number;
     strokeWidth?: number;
+    circleRadius?: number;
     click?: (event: MouseEvent, d: any) => void;
 }

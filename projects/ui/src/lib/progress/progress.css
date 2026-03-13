@@ -1,0 +1,59 @@
+:host {
+    line-height: 0;
+    display: inline-block;
+}
+
+svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+}
+
+svg .ft-track {
+    fill: none;
+    stroke-width: 10;
+    stroke: var(--ft-progress-track-color);
+}
+
+svg .ft-bar {
+    fill: none;
+    stroke-opacity: 0.9;
+    stroke-width: 6;
+    stroke: var(--ft-progress-bar-color);
+}
+
+svg .ft-bar--indeterminate {
+    animation: ft-progress-rotation 2s infinite linear;
+}
+
+svg .ft-bar--determinate {
+    stroke-dasharray: calc(2 * 3.1415926536 * 40);
+}
+
+@keyframes ft-progress-reveal {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes ft-progress-rotation {
+    0% {
+        stroke-dashoffset: 0;
+        stroke-dasharray: 150.6 100.4;
+    }
+
+    50% {
+        stroke-dasharray: 1 250;
+    }
+
+    100% {
+        stroke-dashoffset: 502;
+        stroke-dasharray: 150.6 100.4;
+    }
+}

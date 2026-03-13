@@ -3,7 +3,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -11,19 +10,19 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022",
-    "forceConsistentCasingInFileNames": true,
+    "module": "preserve",
     "paths": {
       "@factor_ec/ui": [
-        "./dist/ui"
+        "./projects/ui/src/public-api.ts"
       ],
       "@factor_ec/utils": [
-        "./dist/utils"
+        "./projects/utils/src/public-api.ts"
+      ],
+      "auth-msal": [
+        "./dist/auth-msal"
       ]
     }
   },
@@ -32,5 +31,32 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/utils/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/utils/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/auth-msal/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/auth-msal/tsconfig.spec.json"
+    }
+  ]
 }
