@@ -4,8 +4,8 @@
   "license": "CC-BY-NC-ND-4.0",
   "author": "Factor",
   "peerDependencies": {
-    "@angular/common": "^21.2.0",
-    "@angular/core": "^21.2.0",
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0",
     "d3": ">=7.9.0"
   },
   "dependencies": {

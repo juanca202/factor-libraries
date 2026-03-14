@@ -91,7 +91,7 @@ export class MessageContentComponent {
       >
         {{ action.label }}
       </button>
-      } @case ('flat') {
+      } @case ('flat') @case ('filled') {
       <button
         type="button"
         mat-flat-button
@@ -100,7 +100,7 @@ export class MessageContentComponent {
       >
         {{ action.label }}
       </button>
-      } @case ('stroked') {
+      } @case ('stroked') @case ('outlined') {
       <button
         type="button"
         mat-stroked-button
