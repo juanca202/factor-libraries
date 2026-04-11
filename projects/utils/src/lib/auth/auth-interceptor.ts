@@ -16,7 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error instanceof HttpErrorResponse) {
         switch ((error as HttpErrorResponse).status) {
           case 401:
-            if (!req.url.includes(authConfig.auth.refreshTokenUrl)) {
+            if (authConfig.jwtAuth && !req.url.includes(authConfig.jwtAuth.refreshTokenUrl)) {
               return authProvider.handle401Error(error, req, next);
             } else {
               authProvider.logout();

@@ -1,6 +1,4 @@
-import { PublicClientApplication } from '@azure/msal-browser';
-
-import type { MsalConfig } from './models/msal-config';
+import { Configuration, PublicClientApplication } from '@azure/msal-browser';
 
 /**
  * Factory que crea la instancia de MSAL usando la configuración inyectada via MSAL_CONFIG.
@@ -25,13 +23,6 @@ import type { MsalConfig } from './models/msal-config';
  * };
  * ```
  */
-export function createMsalInstance(config: MsalConfig): PublicClientApplication {
-  return new PublicClientApplication({
-    auth: {
-      clientId: config.clientId,
-      authority: config.authority,
-      redirectUri: config.redirectUri,
-      postLogoutRedirectUri: config.postLogoutRedirectUri ?? config.redirectUri,
-    },
-  });
+export function createMsalInstance(config: Configuration): PublicClientApplication {
+  return new PublicClientApplication(config);
 }

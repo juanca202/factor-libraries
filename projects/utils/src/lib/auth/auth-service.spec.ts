@@ -20,8 +20,9 @@ interface AuthServiceTestAccess {
 
 const createTestAuthConfig = (overrides?: Partial<AuthConfig>): AuthConfig => ({
   sessionPrefix: 'test',
+  authRedirectPath: '/signin',
   appPath: '/app',
-  auth: {
+  jwtAuth: {
     signinUrl: '/api/signin',
     signupUrl: '/api/signup',
     refreshTokenUrl: '/api/refresh',
@@ -127,7 +128,7 @@ describe('AuthService', () => {
         token: 'valid-token',
         refresh_token: 'refresh'
       });
-      const request = new HttpRequest('GET', authConfig.auth.signinUrl);
+      const request = new HttpRequest('GET', authConfig.jwtAuth?.signinUrl ?? '');
 
       const result = service.addAuthenticationToken(request);
 
@@ -139,7 +140,7 @@ describe('AuthService', () => {
         token: 'valid-token',
         refresh_token: 'refresh'
       });
-      const request = new HttpRequest('GET', authConfig.auth.refreshTokenUrl);
+      const request = new HttpRequest('GET', authConfig.jwtAuth?.refreshTokenUrl ?? '');
 
       const result = service.addAuthenticationToken(request);
 
@@ -162,7 +163,7 @@ describe('AuthService', () => {
       const result = await service.login(loginData);
 
       expect(result).toBe(true);
-      expect(mockHttpClient.post).toHaveBeenCalledWith(authConfig.auth.signinUrl, loginData);
+      expect(mockHttpClient.post).toHaveBeenCalledWith(authConfig.jwtAuth?.signinUrl ?? '', loginData);
       expect(service.user()).toBeNull();
       expect((service as unknown as AuthServiceTestAccess).getToken()).toEqual(authToken);
     });
@@ -182,7 +183,7 @@ describe('AuthService', () => {
 
       expect(result).toEqual(response);
       expect(mockHttpClient.post).toHaveBeenCalledWith(
-        authConfig.auth.signupUrl,
+        authConfig.jwtAuth?.signupUrl ?? '',
         signupData,
         undefined
       );
@@ -198,7 +199,7 @@ describe('AuthService', () => {
 
       expect(result).toEqual(response);
       expect(mockHttpClient.post).toHaveBeenCalledWith(
-        authConfig.auth.signupUrl,
+        authConfig.jwtAuth?.signupUrl ?? '',
         signupData,
         options
       );
@@ -306,7 +307,7 @@ describe('AuthService', () => {
 
     it('should return true when no client URL exists', async () => {
       const configWithoutClient = createTestAuthConfig({
-        auth: { ...authConfig.auth, clients: { google: '' } }
+        jwtAuth: { ...authConfig.jwtAuth!, clients: { google: '' } }
       });
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({

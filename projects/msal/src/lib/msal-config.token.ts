@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import type { MsalConfig } from './models/msal-config';
+import { Configuration } from '@azure/msal-browser';
 
 /**
  * Token de inyección para la configuración de MSAL.
@@ -15,4 +15,4 @@ import type { MsalConfig } from './models/msal-config';
  * ]
  * ```
  */
-export const MSAL_CONFIG = new InjectionToken<MsalConfig>('MSAL_CONFIG');
+export const MSAL_CONFIG = new InjectionToken<Configuration>('MSAL_CONFIG');

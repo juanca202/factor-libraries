@@ -19,7 +19,7 @@ import {
   filter,
   take,
   tap,
-  lastValueFrom
+  lastValueFrom,
 } from 'rxjs';
 
 import { AUTH_CONFIG } from './auth-config.token';
@@ -44,7 +44,7 @@ declare let navigator: Navigator & {
  * adding stateful logic for dialogs, social login, and settings synchronization.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService extends AuthProvider {
   // Dependency injection
@@ -53,10 +53,29 @@ export class AuthService extends AuthProvider {
   private readonly httpClient = inject(HttpClient);
   private readonly _user = signal<User | null>(null);
 
-  /** Session token key */
+  // Properties
   private readonly TOKEN_KEY = `${this.config.sessionPrefix}_sess`;
-
   public readonly user = computed(() => this._user());
+
+  /**
+   * Computed signal indicating whether a user is currently logged in
+   * Based on the presence and validity of the authentication token
+   *
+   * For JWT tokens, validates expiration. For other token types, only checks existence.
+   *
+   * @returns true if a valid token exists, false otherwise
+   */
+  public readonly isLoggedIn = computed(() => {
+    const token = this.getToken();
+    if (!token) return false;
+
+    const expiresAt = this.extractExpirationFromToken(token.token);
+    if (expiresAt) {
+      const currentTimestamp = Math.round(Date.now() / 1000);
+      return expiresAt > currentTimestamp;
+    }
+    return true;
+  });
 
   constructor() {
     super();
@@ -85,8 +104,10 @@ export class AuthService extends AuthProvider {
     // If the access token is null, the user is not logged in; return the original request
     if (
       !token ||
-      request.url.includes(this.config.auth.signinUrl) ||
-      (this.config.auth.refreshTokenUrl && request.url.includes(this.config.auth.refreshTokenUrl))
+      !this.config.jwtAuth ||
+      request.url.includes(this.config.jwtAuth.signinUrl) ||
+      (this.config.jwtAuth.refreshTokenUrl &&
+        request.url.includes(this.config.jwtAuth.refreshTokenUrl))
     ) {
       return request;
     }
@@ -94,11 +115,11 @@ export class AuthService extends AuthProvider {
     // Clone the request, because the original request is immutable
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token.token}`
-      }
+        Authorization: `Bearer ${token.token}`,
+      },
     });
   }
-  public async connect(client: 'google'): Promise<boolean> {
+  public async connect(client: string): Promise<boolean> {
     const isChrome =
       navigator.userAgentData?.brands?.some((b) => b.brand === 'Google Chrome') ?? false;
 
@@ -110,7 +131,7 @@ export class AuthService extends AuthProvider {
       'get' in navigator.credentials
     ) {
       try {
-        const fedcm = this.config.fedcm[client];
+        const fedcm = this.config.fedcm[client] ?? null;
         if (!fedcm) {
           throw new Error('No auth client exists');
         }
@@ -127,12 +148,12 @@ export class AuthService extends AuthProvider {
                   response_type: 'permission id_token',
                   scope: 'email profile openid',
                   include_granted_scopes: true,
-                  nonce: 'notprovided'
-                }
-              }
-            ]
+                  nonce: 'notprovided',
+                },
+              },
+            ],
           },
-          mediation: 'required'
+          mediation: 'required',
         } as FedcmCredentialRequestOptions);
         if (!credential) {
           throw new Error('No credential obtained');
@@ -143,8 +164,8 @@ export class AuthService extends AuthProvider {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            id_token: JSON.parse(fedcmCredential.token).id_token
-          })
+            id_token: JSON.parse(fedcmCredential.token).id_token,
+          }),
         });
         const data = await response.json();
         this.setToken(data.token);
@@ -154,8 +175,8 @@ export class AuthService extends AuthProvider {
         console.error('FedCM error: ', e);
         return false;
       }
-    } else {
-      const url = this.config.auth.clients[client];
+    } else if (this.config.jwtAuth) {
+      const url = this.config.jwtAuth?.clients[client];
       if (url) {
         location.href = url;
       }
@@ -185,7 +206,7 @@ export class AuthService extends AuthProvider {
           payload['preferred_username'] ??
           payload['username'] ??
           '') as string,
-        roles
+        roles,
       };
     } catch {
       return null;
@@ -217,6 +238,7 @@ export class AuthService extends AuthProvider {
 
     return undefined;
   }
+
   /**
    * Handles the flow of refreshing the access token or redirecting to sign-in
    * @param err HTTP error
@@ -226,10 +248,10 @@ export class AuthService extends AuthProvider {
   public handle401Error(
     err: HttpErrorResponse,
     request: HttpRequest<any>,
-    next: HttpHandlerFn
+    next: HttpHandlerFn,
   ): Observable<any> {
     const token: AuthToken | null = this.getToken();
-    if (token && token.refresh_token && this.config.auth.refreshTokenUrl) {
+    if (token && token.refresh_token && this.config.jwtAuth?.refreshTokenUrl) {
       if (!this.refreshTokenInProgress) {
         this.refreshTokenInProgress = true;
         this.refreshTokenSubject.next(null);
@@ -248,8 +270,8 @@ export class AuthService extends AuthProvider {
                   headers: new HttpHeaders(),
                   status: 401,
                   statusText: '',
-                  url: undefined
-                })
+                  url: undefined,
+                }),
             );
           }),
           catchError((error) => {
@@ -261,14 +283,14 @@ export class AuthService extends AuthProvider {
                   headers: error.headers,
                   status: 401,
                   statusText: error.statusText,
-                  url: error.url || undefined
-                })
+                  url: error.url || undefined,
+                }),
             );
           }),
           share(),
           finalize(() => {
             this.refreshTokenInProgress = false;
-          })
+          }),
         );
       } else {
         return this.refreshTokenSubject.pipe(
@@ -276,7 +298,7 @@ export class AuthService extends AuthProvider {
           take(1),
           switchMap(() => {
             return next(this.addAuthenticationToken(request));
-          })
+          }),
         );
       }
     } else {
@@ -288,18 +310,26 @@ export class AuthService extends AuthProvider {
     }
   }
 
+  public init(): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+
   /**
    * Sends sign-in to the server and obtains the authentication token
    * @param data Authentication data
    * @returns
    */
   public async login(data?: Login): Promise<boolean> {
+    if (!this.config.jwtAuth) {
+      return false;
+    }
     const token = await lastValueFrom(
-      this.httpClient.post<AuthToken>(this.config.auth.signinUrl, data)
+      this.httpClient.post<AuthToken>(this.config.jwtAuth.signinUrl, data),
     );
     this.setToken(token);
     return true;
   }
+
   /**
    * Logs out the user
    */
@@ -313,27 +343,34 @@ export class AuthService extends AuthProvider {
   }
   public async signup(
     data: Signup | Record<string, unknown>,
-    options?: Record<string, unknown>
+    options?: Record<string, unknown>,
   ): Promise<unknown> {
-    return lastValueFrom(this.httpClient.post(this.config.auth.signupUrl, data, options));
+    return this.config.jwtAuth
+      ? lastValueFrom(this.httpClient.post(this.config.jwtAuth.signupUrl, data, options))
+      : throwError(() => new Error('No signup URL configured'));
   }
+
   /**
    * If a refresh token is implemented, send it to obtain a new access token
    * @returns Access token
    */
   public refreshToken(): Observable<AuthToken> {
     const token = this.getToken();
-    return this.httpClient
-      .post<AuthToken>(this.config.auth.refreshTokenUrl, { refresh_token: token?.refresh_token })
-      .pipe(
-        tap((token: AuthToken) => {
-          this.setToken(token);
-        }),
-        catchError((error) => {
-          this.logout();
-          return throwError(() => new Error(error));
-        })
-      );
+    return this.config.jwtAuth
+      ? this.httpClient
+          .post<AuthToken>(this.config.jwtAuth.refreshTokenUrl, {
+            refresh_token: token?.refresh_token,
+          })
+          .pipe(
+            tap((token: AuthToken) => {
+              this.setToken(token);
+            }),
+            catchError((error) => {
+              this.logout();
+              return throwError(() => new Error(error));
+            }),
+          )
+      : throwError(() => new Error('No refresh token URL configured'));
   }
 
   /**
@@ -343,7 +380,7 @@ export class AuthService extends AuthProvider {
   private getToken(): AuthToken | null {
     if (typeof document === 'undefined' || !document.cookie) return null;
     const match = document.cookie.match(
-      new RegExp('(?:^|; )' + this.TOKEN_KEY.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)')
+      new RegExp('(?:^|; )' + this.TOKEN_KEY.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)'),
     );
     const raw = match ? decodeURIComponent(match[1]) : null;
     if (!raw) return null;
@@ -392,26 +429,4 @@ export class AuthService extends AuthProvider {
   public clearUser(): void {
     this._user.set(null);
   }
-
-  /**
-   * Computed signal indicating whether a user is currently logged in
-   * Based on the presence and validity of the authentication token
-   *
-   * For JWT tokens, validates expiration. For other token types, only checks existence.
-   *
-   * @returns true if a valid token exists, false otherwise
-   */
-  public readonly isLoggedIn = computed(() => {
-    // Depend on _user so computed re-evaluates when setToken/clearToken updates state
-    this._user();
-    const token = this.getToken();
-    if (!token) return false;
-
-    const expiresAt = this.extractExpirationFromToken(token.token);
-    if (expiresAt) {
-      const currentTimestamp = Math.round(Date.now() / 1000);
-      return expiresAt > currentTimestamp;
-    }
-    return true;
-  });
 }
