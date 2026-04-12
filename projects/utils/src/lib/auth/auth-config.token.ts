@@ -1,18 +1,19 @@
 import { InjectionToken } from '@angular/core';
-import type { AuthConfig } from './models/auth-config';
+import type { FedcmAuth, JwtAuth } from './models/auth-config';
 
 /**
- * Injection token for auth configuration.
- * Provide this in app.config with values from environment.
+ * Auth configuration via {@link JWT_AUTH_CONFIG} (JWT, session prefix, redirects)
+ * and optional {@link FEDCM_AUTH_CONFIG}.
  *
  * @example
  * ```typescript
- * import { AUTH_CONFIG } from 'auth-core';
- * import { environment } from '@/environments/environment';
- *
  * providers: [
- *   { provide: AUTH_CONFIG, useValue: environment }
+ *   { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
+ *   { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
  * ]
  * ```
  */
-export const AUTH_CONFIG = new InjectionToken<AuthConfig>('AUTH_CONFIG');
+export const JWT_AUTH_CONFIG = new InjectionToken<JwtAuth | undefined>('JWT_AUTH_CONFIG');
+
+/** FedCM settings per provider key (e.g. `google`). */
+export const FEDCM_AUTH_CONFIG = new InjectionToken<FedcmAuth | undefined>('FEDCM_AUTH_CONFIG');

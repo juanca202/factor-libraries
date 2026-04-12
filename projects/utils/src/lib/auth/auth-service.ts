@@ -22,7 +22,7 @@ import {
   lastValueFrom,
 } from 'rxjs';
 
-import { AUTH_CONFIG } from './auth-config.token';
+import { FEDCM_AUTH_CONFIG, JWT_AUTH_CONFIG } from './auth-config.token';
 import { FedcmCredentialRequestOptions, FedcmCredential } from './models/fedcm-credential';
 import { AuthProvider } from './auth-provider';
 import { Login } from './models/login';
@@ -48,13 +48,16 @@ declare let navigator: Navigator & {
 })
 export class AuthService extends AuthProvider {
   // Dependency injection
-  private readonly config = inject(AUTH_CONFIG);
+  private readonly jwtAuth = inject(JWT_AUTH_CONFIG, { optional: true });
+  private readonly fedcmAuth = inject(FEDCM_AUTH_CONFIG, { optional: true });
   private readonly dialog = inject(MatDialog);
   private readonly httpClient = inject(HttpClient);
   private readonly _user = signal<User | null>(null);
 
-  // Properties
-  private readonly TOKEN_KEY = `${this.config.sessionPrefix}_sess`;
+  /** Cookie / storage key for the session token (`{sessionPrefix}_sess`). */
+  private get tokenCookieName(): string {
+    return `${this.jwtAuth?.sessionPrefix ?? ''}_sess`;
+  }
   public readonly user = computed(() => this._user());
 
   /**
@@ -104,10 +107,10 @@ export class AuthService extends AuthProvider {
     // If the access token is null, the user is not logged in; return the original request
     if (
       !token ||
-      !this.config.jwtAuth ||
-      request.url.includes(this.config.jwtAuth.signinUrl) ||
-      (this.config.jwtAuth.refreshTokenUrl &&
-        request.url.includes(this.config.jwtAuth.refreshTokenUrl))
+      !this.jwtAuth ||
+      request.url.includes(this.jwtAuth.signinUrl) ||
+      (this.jwtAuth.refreshTokenUrl &&
+        request.url.includes(this.jwtAuth.refreshTokenUrl))
     ) {
       return request;
     }
@@ -124,14 +127,14 @@ export class AuthService extends AuthProvider {
       navigator.userAgentData?.brands?.some((b) => b.brand === 'Google Chrome') ?? false;
 
     if (
-      this.config.fedcm &&
+      this.fedcmAuth &&
       isChrome &&
       'credentials' in navigator &&
       navigator.credentials &&
       'get' in navigator.credentials
     ) {
       try {
-        const fedcm = this.config.fedcm[client] ?? null;
+        const fedcm = this.fedcmAuth[client] ?? null;
         if (!fedcm) {
           throw new Error('No auth client exists');
         }
@@ -170,13 +173,13 @@ export class AuthService extends AuthProvider {
         const data = await response.json();
         this.setToken(data.token);
         this._user.set(data.user);
-        location.href = this.config.appPath;
+        location.href = this.jwtAuth?.postLogoutRedirectUri ?? '';
       } catch (e) {
         console.error('FedCM error: ', e);
         return false;
       }
-    } else if (this.config.jwtAuth) {
-      const url = this.config.jwtAuth?.clients[client];
+    } else if (this.jwtAuth) {
+      const url = this.jwtAuth.clients[client];
       if (url) {
         location.href = url;
       }
@@ -251,7 +254,7 @@ export class AuthService extends AuthProvider {
     next: HttpHandlerFn,
   ): Observable<any> {
     const token: AuthToken | null = this.getToken();
-    if (token && token.refresh_token && this.config.jwtAuth?.refreshTokenUrl) {
+    if (token && token.refresh_token && this.jwtAuth?.refreshTokenUrl) {
       if (!this.refreshTokenInProgress) {
         this.refreshTokenInProgress = true;
         this.refreshTokenSubject.next(null);
@@ -320,11 +323,11 @@ export class AuthService extends AuthProvider {
    * @returns
    */
   public async login(data?: Login): Promise<boolean> {
-    if (!this.config.jwtAuth) {
+    if (!this.jwtAuth) {
       return false;
     }
     const token = await lastValueFrom(
-      this.httpClient.post<AuthToken>(this.config.jwtAuth.signinUrl, data),
+      this.httpClient.post<AuthToken>(this.jwtAuth.signinUrl, data),
     );
     this.setToken(token);
     return true;
@@ -337,16 +340,16 @@ export class AuthService extends AuthProvider {
     this.dialog.closeAll();
     this.clearToken();
     this.clearUser();
-    location.href =
-      window.innerWidth < 1000 ? `${this.config.appPath}/auth` : `${this.config.appPath}/signin`;
+    location.href = this.jwtAuth?.postLogoutRedirectUri ?? '/';
     return true;
   }
+  
   public async signup(
     data: Signup | Record<string, unknown>,
     options?: Record<string, unknown>,
   ): Promise<unknown> {
-    return this.config.jwtAuth
-      ? lastValueFrom(this.httpClient.post(this.config.jwtAuth.signupUrl, data, options))
+    return this.jwtAuth
+      ? lastValueFrom(this.httpClient.post(this.jwtAuth.signupUrl, data, options))
       : throwError(() => new Error('No signup URL configured'));
   }
 
@@ -356,9 +359,9 @@ export class AuthService extends AuthProvider {
    */
   public refreshToken(): Observable<AuthToken> {
     const token = this.getToken();
-    return this.config.jwtAuth
+    return this.jwtAuth
       ? this.httpClient
-          .post<AuthToken>(this.config.jwtAuth.refreshTokenUrl, {
+          .post<AuthToken>(this.jwtAuth.refreshTokenUrl, {
             refresh_token: token?.refresh_token,
           })
           .pipe(
@@ -380,7 +383,7 @@ export class AuthService extends AuthProvider {
   private getToken(): AuthToken | null {
     if (typeof document === 'undefined' || !document.cookie) return null;
     const match = document.cookie.match(
-      new RegExp('(?:^|; )' + this.TOKEN_KEY.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)'),
+      new RegExp('(?:^|; )' + this.tokenCookieName.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)'),
     );
     const raw = match ? decodeURIComponent(match[1]) : null;
     if (!raw) return null;
@@ -406,7 +409,7 @@ export class AuthService extends AuthProvider {
       const maxAge = expiresAt
         ? Math.max(0, expiresAt - Math.round(Date.now() / 1000))
         : 24 * 60 * 60;
-      let cookie = `${this.TOKEN_KEY}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Strict`;
+      let cookie = `${this.tokenCookieName}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Strict`;
       if (typeof location !== 'undefined' && location.protocol === 'https:') cookie += '; Secure';
       document.cookie = cookie;
       this._user.set(this.extractUserFromToken(copy.token) ?? null);
@@ -418,7 +421,7 @@ export class AuthService extends AuthProvider {
    */
   public clearToken(): void {
     if (typeof document !== 'undefined') {
-      document.cookie = `${this.TOKEN_KEY}=; Path=/; Max-Age=0`;
+      document.cookie = `${this.tokenCookieName}=; Path=/; Max-Age=0`;
     }
     this.clearUser();
   }

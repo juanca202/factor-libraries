@@ -4,10 +4,10 @@ import { HttpRequest, HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { AuthService } from './auth-service';
-import { AUTH_CONFIG } from './auth-config.token';
+import { FEDCM_AUTH_CONFIG, JWT_AUTH_CONFIG } from './auth-config.token';
 import { Login } from './models/login';
 import { AuthToken } from './models/auth-token';
-import type { AuthConfig } from './models/auth-config';
+import type { FedcmAuth, JwtAuth } from './models/auth-config';
 import type { WritableSignal } from '@angular/core';
 import type { User } from './models/user';
 
@@ -18,17 +18,15 @@ interface AuthServiceTestAccess {
   _user: WritableSignal<User | null>;
 }
 
-const createTestAuthConfig = (overrides?: Partial<AuthConfig>): AuthConfig => ({
+const createTestJwtAuth = (overrides?: Partial<JwtAuth>): JwtAuth => ({
+  signinUrl: '/api/signin',
+  signupUrl: '/api/signup',
+  refreshTokenUrl: '/api/refresh',
+  tokenType: 'jwt',
+  clients: { google: 'https://auth.google.com' },
+  redirectUri: '/signin',
+  postLogoutRedirectUri: '/app',
   sessionPrefix: 'test',
-  authRedirectPath: '/signin',
-  appPath: '/app',
-  jwtAuth: {
-    signinUrl: '/api/signin',
-    signupUrl: '/api/signup',
-    refreshTokenUrl: '/api/refresh',
-    tokenType: 'jwt',
-    clients: { google: 'https://auth.google.com' }
-  },
   ...overrides
 });
 
@@ -36,10 +34,13 @@ describe('AuthService', () => {
   let service: AuthService;
   let mockHttpClient: { post: ReturnType<typeof vi.fn>; get: ReturnType<typeof vi.fn> };
   let mockDialog: Partial<MatDialog>;
-  let authConfig: AuthConfig;
+  let jwtAuth: JwtAuth;
+  let fedcmAuth: FedcmAuth | undefined;
 
   beforeEach(() => {
-    authConfig = createTestAuthConfig();
+    TestBed.resetTestingModule();
+    jwtAuth = createTestJwtAuth();
+    fedcmAuth = undefined;
 
     mockHttpClient = {
       post: vi.fn(),
@@ -81,7 +82,8 @@ describe('AuthService', () => {
     TestBed.configureTestingModule({
       providers: [
         AuthService,
-        { provide: AUTH_CONFIG, useValue: authConfig },
+        { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
+        { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
         { provide: MatDialog, useValue: mockDialog },
         { provide: HttpClient, useValue: mockHttpClient }
       ]
@@ -128,7 +130,7 @@ describe('AuthService', () => {
         token: 'valid-token',
         refresh_token: 'refresh'
       });
-      const request = new HttpRequest('GET', authConfig.jwtAuth?.signinUrl ?? '');
+      const request = new HttpRequest('GET', jwtAuth.signinUrl);
 
       const result = service.addAuthenticationToken(request);
 
@@ -140,7 +142,7 @@ describe('AuthService', () => {
         token: 'valid-token',
         refresh_token: 'refresh'
       });
-      const request = new HttpRequest('GET', authConfig.jwtAuth?.refreshTokenUrl ?? '');
+      const request = new HttpRequest('GET', jwtAuth.refreshTokenUrl);
 
       const result = service.addAuthenticationToken(request);
 
@@ -163,7 +165,7 @@ describe('AuthService', () => {
       const result = await service.login(loginData);
 
       expect(result).toBe(true);
-      expect(mockHttpClient.post).toHaveBeenCalledWith(authConfig.jwtAuth?.signinUrl ?? '', loginData);
+      expect(mockHttpClient.post).toHaveBeenCalledWith(jwtAuth.signinUrl, loginData);
       expect(service.user()).toBeNull();
       expect((service as unknown as AuthServiceTestAccess).getToken()).toEqual(authToken);
     });
@@ -183,7 +185,7 @@ describe('AuthService', () => {
 
       expect(result).toEqual(response);
       expect(mockHttpClient.post).toHaveBeenCalledWith(
-        authConfig.jwtAuth?.signupUrl ?? '',
+        jwtAuth.signupUrl,
         signupData,
         undefined
       );
@@ -199,7 +201,7 @@ describe('AuthService', () => {
 
       expect(result).toEqual(response);
       expect(mockHttpClient.post).toHaveBeenCalledWith(
-        authConfig.jwtAuth?.signupUrl ?? '',
+        jwtAuth.signupUrl,
         signupData,
         options
       );
@@ -306,14 +308,13 @@ describe('AuthService', () => {
     });
 
     it('should return true when no client URL exists', async () => {
-      const configWithoutClient = createTestAuthConfig({
-        jwtAuth: { ...authConfig.jwtAuth!, clients: { google: '' } }
-      });
+      const jwtWithoutClient = createTestJwtAuth({ clients: { google: '' } });
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         providers: [
           AuthService,
-          { provide: AUTH_CONFIG, useValue: configWithoutClient },
+          { provide: JWT_AUTH_CONFIG, useValue: jwtWithoutClient },
+          { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
           { provide: MatDialog, useValue: mockDialog },
           { provide: HttpClient, useValue: mockHttpClient }
         ]
@@ -334,20 +335,19 @@ describe('AuthService', () => {
     });
 
     it('should handle FedCM error gracefully', async () => {
-      authConfig = createTestAuthConfig({
-        fedcm: {
-          google: {
-            tokenUrl: 'https://token.url',
-            configURL: 'https://config.url',
-            clientId: 'client-id'
-          }
+      fedcmAuth = {
+        google: {
+          tokenUrl: 'https://token.url',
+          configURL: 'https://config.url',
+          clientId: 'client-id'
         }
-      });
+      };
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         providers: [
           AuthService,
-          { provide: AUTH_CONFIG, useValue: authConfig },
+          { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
+          { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
           { provide: MatDialog, useValue: mockDialog },
           { provide: HttpClient, useValue: mockHttpClient }
         ]
@@ -371,12 +371,13 @@ describe('AuthService', () => {
     });
 
     it('should handle missing FedCM config gracefully', async () => {
-      authConfig = createTestAuthConfig({ fedcm: {} });
+      fedcmAuth = {};
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         providers: [
           AuthService,
-          { provide: AUTH_CONFIG, useValue: authConfig },
+          { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
+          { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
           { provide: MatDialog, useValue: mockDialog },
           { provide: HttpClient, useValue: mockHttpClient }
         ]
@@ -431,16 +432,28 @@ describe('AuthService', () => {
     });
 
     it('should return true when valid token exists', () => {
+      service.clearToken();
       const futureExp = Math.round(Date.now() / 1000) + 3600;
       const tokenPayload = { exp: futureExp, username: 'test' };
       const encodedPayload = window.btoa(JSON.stringify(tokenPayload));
       const tokenValue = `header.${encodedPayload}.signature`;
-      (service as unknown as AuthServiceTestAccess).setToken({
-        token: tokenValue,
-        refresh_token: 'refresh'
-      });
+      const tokenData = { token: tokenValue, refresh_token: 'refresh' };
+      const cookieKey = `${jwtAuth.sessionPrefix}_sess`;
+      document.cookie = `${cookieKey}=${encodeURIComponent(JSON.stringify(tokenData))}; Path=/; Max-Age=3600`;
 
-      expect(service.isLoggedIn()).toBe(true);
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          AuthService,
+          { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
+          { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
+          { provide: MatDialog, useValue: mockDialog },
+          { provide: HttpClient, useValue: mockHttpClient }
+        ]
+      });
+      const svc = TestBed.inject(AuthService);
+
+      expect(svc.isLoggedIn()).toBe(true);
     });
   });
 });
