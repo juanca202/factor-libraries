@@ -3,7 +3,7 @@ import {
   HttpErrorResponse,
   HttpHeaders,
   HttpHandlerFn,
-  HttpClient
+  HttpClient,
 } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,18 +22,21 @@ import {
   lastValueFrom,
 } from 'rxjs';
 
-import { FEDCM_AUTH_CONFIG, JWT_AUTH_CONFIG } from './auth-config.token';
+import { FEDCM_AUTH_CONFIG, JWT_AUTH_CONFIG, SESSION_PREFIX } from './auth-config.token';
 import { FedcmCredentialRequestOptions, FedcmCredential } from './models/fedcm-credential';
 import { AuthProvider } from './auth-provider';
 import { Login } from './models/login';
 import { AuthToken } from './models/auth-token';
 import { User } from './models/user';
 import type { Signup } from './models/signup';
+import { Router } from '@angular/router';
 
 declare let navigator: Navigator & {
   userAgentData?: { brands: { brand: string }[] };
   credentials?: { get?: (options?: unknown) => Promise<Credential | null> };
 };
+
+type HttpPostOptions = Parameters<HttpClient['post']>[2];
 
 /**
  * Concrete authentication provider responsible for handling session lifecycle,
@@ -50,42 +53,17 @@ export class AuthService extends AuthProvider {
   // Dependency injection
   private readonly jwtAuth = inject(JWT_AUTH_CONFIG, { optional: true });
   private readonly fedcmAuth = inject(FEDCM_AUTH_CONFIG, { optional: true });
+  private readonly sessionPrefix = inject(SESSION_PREFIX, { optional: true });
   private readonly dialog = inject(MatDialog);
   private readonly httpClient = inject(HttpClient);
+  private readonly router = inject(Router);
   private readonly _user = signal<User | null>(null);
 
   /** Cookie / storage key for the session token (`{sessionPrefix}_sess`). */
   private get tokenCookieName(): string {
-    return `${this.jwtAuth?.sessionPrefix ?? ''}_sess`;
+    return `${this.sessionPrefix ?? ''}_sess`;
   }
   public readonly user = computed(() => this._user());
-
-  /**
-   * Computed signal indicating whether a user is currently logged in
-   * Based on the presence and validity of the authentication token
-   *
-   * For JWT tokens, validates expiration. For other token types, only checks existence.
-   *
-   * @returns true if a valid token exists, false otherwise
-   */
-  public readonly isLoggedIn = computed(() => {
-    const token = this.getToken();
-    if (!token) return false;
-
-    const expiresAt = this.extractExpirationFromToken(token.token);
-    if (expiresAt) {
-      const currentTimestamp = Math.round(Date.now() / 1000);
-      return expiresAt > currentTimestamp;
-    }
-    return true;
-  });
-
-  constructor() {
-    super();
-    if (this.isLoggedIn()) {
-      this._user.set(this.extractUserFromToken(this.getToken()?.token ?? ''));
-    }
-  }
 
   /**
    * Flag indicating whether the access token is being refreshed
@@ -95,6 +73,13 @@ export class AuthService extends AuthProvider {
    * Manages the access token refresh flow
    */
   private readonly refreshTokenSubject = new BehaviorSubject<AuthToken | null>(null);
+
+  constructor() {
+    super();
+    if (this.isLoggedIn()) {
+      this._user.set(this.extractUserFromToken(this.getToken()?.token ?? ''));
+    }
+  }
 
   /**
    * Sends the authentication token to the server
@@ -109,8 +94,7 @@ export class AuthService extends AuthProvider {
       !token ||
       !this.jwtAuth ||
       request.url.includes(this.jwtAuth.signinUrl) ||
-      (this.jwtAuth.refreshTokenUrl &&
-        request.url.includes(this.jwtAuth.refreshTokenUrl))
+      (this.jwtAuth.refreshTokenUrl && request.url.includes(this.jwtAuth.refreshTokenUrl))
     ) {
       return request;
     }
@@ -128,6 +112,7 @@ export class AuthService extends AuthProvider {
 
     if (
       this.fedcmAuth &&
+      this.fedcmAuth[client].enabled &&
       isChrome &&
       'credentials' in navigator &&
       navigator.credentials &&
@@ -173,7 +158,7 @@ export class AuthService extends AuthProvider {
         const data = await response.json();
         this.setToken(data.token);
         this._user.set(data.user);
-        location.href = this.jwtAuth?.postLogoutRedirectUri ?? '';
+        location.href = this.jwtAuth?.redirectUri ?? '';
       } catch (e) {
         console.error('FedCM error: ', e);
         return false;
@@ -318,19 +303,51 @@ export class AuthService extends AuthProvider {
   }
 
   /**
+   * Computed signal indicating whether a user is currently logged in
+   * Based on the presence and validity of the authentication token
+   *
+   * For JWT tokens, validates expiration. For other token types, only checks existence.
+   *
+   * @returns true if a valid token exists, false otherwise
+   */
+  public isLoggedIn(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    const expiresAt = this.extractExpirationFromToken(token.token);
+    if (expiresAt) {
+      const currentTimestamp = Math.round(Date.now() / 1000);
+      return expiresAt > currentTimestamp;
+    }
+    return true;
+  }
+
+  /**
    * Sends sign-in to the server and obtains the authentication token
    * @param data Authentication data
    * @returns
    */
-  public async login(data?: Login): Promise<boolean> {
+  public async postLogin<T extends Login, R extends AuthToken = AuthToken, TResponse = unknown>(
+    data?: T,
+    map?: (token: TResponse) => R,
+  ): Promise<boolean> {
     if (!this.jwtAuth) {
       return false;
     }
     const token = await lastValueFrom(
-      this.httpClient.post<AuthToken>(this.jwtAuth.signinUrl, data),
+      this.httpClient.post<TResponse>(this.jwtAuth.signinUrl, data),
     );
-    this.setToken(token);
+    const mapped = map ? map(token) : token as unknown as R;
+    this.setToken(mapped);
     return true;
+  }
+
+  public login<T extends Login, R extends AuthToken = AuthToken, TResponse = unknown>(
+    _data?: T,
+    _map?: (token: TResponse) => R
+  ): Promise<boolean> {
+    this.router.navigateByUrl('/signin');
+    return Promise.resolve(true);
   }
 
   /**
@@ -340,16 +357,16 @@ export class AuthService extends AuthProvider {
     this.dialog.closeAll();
     this.clearToken();
     this.clearUser();
-    location.href = this.jwtAuth?.postLogoutRedirectUri ?? '/';
+    location.href = this.jwtAuth?.postLogoutRedirectUri ??  this.jwtAuth?.loginRedirectUri ?? '';
     return true;
   }
-  
-  public async signup(
-    data: Signup | Record<string, unknown>,
-    options?: Record<string, unknown>,
+
+  public async signup<T extends Signup, R = unknown>(
+    data: T,
+    options?: HttpPostOptions,
   ): Promise<unknown> {
     return this.jwtAuth
-      ? lastValueFrom(this.httpClient.post(this.jwtAuth.signupUrl, data, options))
+      ? lastValueFrom(this.httpClient.post<R>(this.jwtAuth.signupUrl, data, options))
       : throwError(() => new Error('No signup URL configured'));
   }
 
@@ -380,16 +397,18 @@ export class AuthService extends AuthProvider {
    * Reads the session token from the Secure cookie (client-side storage).
    * @internal
    */
-  private getToken(): AuthToken | null {
+  private getToken<T extends AuthToken = AuthToken>(): T | null {
     if (typeof document === 'undefined' || !document.cookie) return null;
     const match = document.cookie.match(
-      new RegExp('(?:^|; )' + this.tokenCookieName.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)'),
+      new RegExp(
+        '(?:^|; )' + this.tokenCookieName.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)',
+      ),
     );
     const raw = match ? decodeURIComponent(match[1]) : null;
     if (!raw) return null;
     try {
-      const data = JSON.parse(raw) as AuthToken;
-      return data?.token ? data : null;
+      const data = JSON.parse(raw) as T;
+      return (data as AuthToken)?.token ? data : null;
     } catch {
       return null;
     }

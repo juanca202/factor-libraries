@@ -7,5 +7,5 @@ export abstract class AuthProvider {
   public abstract init(): Promise<boolean>;
   public abstract login(data?: Login): Promise<boolean>;
   public abstract logout(): Promise<boolean>;
-  public abstract isLoggedIn: Signal<boolean>;
+  public abstract isLoggedIn(): boolean;
 }

@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import type { FedcmAuth, JwtAuth } from './models/auth-config';
+import type { FedcmAuthConfig, JwtAuthConfig } from './models/auth-config';
 
 /**
  * Auth configuration via {@link JWT_AUTH_CONFIG} (JWT, session prefix, redirects)
@@ -13,7 +13,10 @@ import type { FedcmAuth, JwtAuth } from './models/auth-config';
  * ]
  * ```
  */
-export const JWT_AUTH_CONFIG = new InjectionToken<JwtAuth | undefined>('JWT_AUTH_CONFIG');
+export const JWT_AUTH_CONFIG = new InjectionToken<JwtAuthConfig | undefined>('JWT_AUTH_CONFIG');
+
+/** Optional prefix used to namespace auth session keys/cookies. */
+export const SESSION_PREFIX = new InjectionToken<string | undefined>('SESSION_PREFIX');
 
 /** FedCM settings per provider key (e.g. `google`). */
-export const FEDCM_AUTH_CONFIG = new InjectionToken<FedcmAuth | undefined>('FEDCM_AUTH_CONFIG');
+export const FEDCM_AUTH_CONFIG = new InjectionToken<FedcmAuthConfig | undefined>('FEDCM_AUTH_CONFIG');

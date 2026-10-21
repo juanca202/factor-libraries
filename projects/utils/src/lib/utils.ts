@@ -38,7 +38,6 @@ export * from './auth/reset-guard';
 export * from './auth/auth-interceptor';
 export * from './auth/models/auth-config';
 export * from './auth/models/auth-token';
-export * from './auth/models/auth-token-payload';
 export * from './auth/models/fedcm-credential';
 export * from './auth/models/jwt-auth-provider';
 export * from './auth/models/jwt-token-payload';

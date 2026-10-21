@@ -1,3 +1,7 @@
+/**
+ * Base interface for JWT token payloads.
+ * Use JWTTokenPayload for the standard JWT claims implementation.
+ */
 export interface JWTTokenPayload {
     // 🔹 Registered claims (todos opcionales según RFC 7519)
     iss?: string;   // issuer
