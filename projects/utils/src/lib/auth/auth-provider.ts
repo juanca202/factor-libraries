@@ -44,7 +44,5 @@ export abstract class AuthProvider {
    * @returns A promise resolving to `true` when the flow completes
    */
   public abstract logout(): Promise<boolean>;
-
-  /** Signal indicating whether there is an active authenticated session. */
-  public abstract isLoggedIn: Signal<boolean>;
+  public abstract isLoggedIn(): boolean;
 }
