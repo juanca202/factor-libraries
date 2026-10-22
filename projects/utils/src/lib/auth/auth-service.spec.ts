@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpRequest, HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { AuthService } from './auth-service';
 import { FEDCM_AUTH_CONFIG, JWT_AUTH_CONFIG } from './auth-config.token';
@@ -33,7 +32,6 @@ const createTestJwtAuth = (overrides?: Partial<JwtAuth>): JwtAuth => ({
 describe('AuthService', () => {
   let service: AuthService;
   let mockHttpClient: { post: ReturnType<typeof vi.fn>; get: ReturnType<typeof vi.fn> };
-  let mockDialog: Partial<MatDialog>;
   let jwtAuth: JwtAuth;
   let fedcmAuth: FedcmAuth | undefined;
 
@@ -45,13 +43,6 @@ describe('AuthService', () => {
     mockHttpClient = {
       post: vi.fn(),
       get: vi.fn()
-    };
-
-    mockDialog = {
-      open: vi.fn().mockReturnValue({
-        afterClosed: vi.fn().mockReturnValue(of(null))
-      }),
-      closeAll: vi.fn()
     };
 
     const originalAtob = globalThis.atob?.bind(globalThis);
@@ -84,7 +75,6 @@ describe('AuthService', () => {
         AuthService,
         { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
         { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
-        { provide: MatDialog, useValue: mockDialog },
         { provide: HttpClient, useValue: mockHttpClient }
       ]
     });
@@ -209,22 +199,23 @@ describe('AuthService', () => {
   });
 
   describe('logout', () => {
-    it('should logout user and redirect to signin', async () => {
-      const closeAllSpy = vi.spyOn(mockDialog, 'closeAll');
-
+    it('should logout user and redirect to postLogoutRedirectUri', async () => {
       const result = await service.logout();
 
       expect(result).toBe(true);
-      expect(closeAllSpy).toHaveBeenCalled();
-      expect(window.location.href).toContain('/signin');
+      expect(window.location.href).toContain('/app');
     });
 
-    it('should redirect to /auth on mobile', async () => {
-      Object.defineProperty(window, 'innerWidth', { writable: true, value: 800 });
+    it('should clear the stored token and user', async () => {
+      (service as unknown as AuthServiceTestAccess).setToken({
+        token: 'token',
+        refresh_token: 'refresh-token'
+      });
 
       await service.logout();
 
-      expect(window.location.href).toContain('/auth');
+      expect((service as unknown as AuthServiceTestAccess).getToken()).toBeNull();
+      expect((service as unknown as AuthServiceTestAccess)._user()).toBeNull();
     });
   });
 
@@ -315,7 +306,6 @@ describe('AuthService', () => {
           AuthService,
           { provide: JWT_AUTH_CONFIG, useValue: jwtWithoutClient },
           { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
-          { provide: MatDialog, useValue: mockDialog },
           { provide: HttpClient, useValue: mockHttpClient }
         ]
       });
@@ -348,7 +338,6 @@ describe('AuthService', () => {
           AuthService,
           { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
           { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
-          { provide: MatDialog, useValue: mockDialog },
           { provide: HttpClient, useValue: mockHttpClient }
         ]
       });
@@ -378,7 +367,6 @@ describe('AuthService', () => {
           AuthService,
           { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
           { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
-          { provide: MatDialog, useValue: mockDialog },
           { provide: HttpClient, useValue: mockHttpClient }
         ]
       });
@@ -447,7 +435,6 @@ describe('AuthService', () => {
           AuthService,
           { provide: JWT_AUTH_CONFIG, useValue: jwtAuth },
           { provide: FEDCM_AUTH_CONFIG, useValue: fedcmAuth },
-          { provide: MatDialog, useValue: mockDialog },
           { provide: HttpClient, useValue: mockHttpClient }
         ]
       });

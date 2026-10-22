@@ -14,6 +14,7 @@ describe('Avatar', () => {
 
     fixture = TestBed.createComponent(Avatar);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('label', 'Test User');
     await fixture.whenStable();
   });
 

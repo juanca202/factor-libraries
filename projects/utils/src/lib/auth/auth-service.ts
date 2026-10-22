@@ -6,7 +6,6 @@ import {
   HttpClient
 } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 
 import {
   BehaviorSubject,
@@ -41,7 +40,7 @@ declare let navigator: Navigator & {
  *
  * @remarks
  * The service extends {@link AuthProvider} to leverage core session helpers while
- * adding stateful logic for dialogs, social login, and settings synchronization.
+ * adding stateful logic for social login, and settings synchronization.
  */
 @Injectable({
   providedIn: 'root',
@@ -50,7 +49,6 @@ export class AuthService extends AuthProvider {
   // Dependency injection
   private readonly jwtAuth = inject(JWT_AUTH_CONFIG, { optional: true });
   private readonly fedcmAuth = inject(FEDCM_AUTH_CONFIG, { optional: true });
-  private readonly dialog = inject(MatDialog);
   private readonly httpClient = inject(HttpClient);
   private readonly _user = signal<User | null>(null);
 
@@ -58,6 +56,13 @@ export class AuthService extends AuthProvider {
   private get tokenCookieName(): string {
     return `${this.jwtAuth?.sessionPrefix ?? ''}_sess`;
   }
+  /**
+   * Signal with the current user, or `null` when there is no session.
+   *
+   * @remarks
+   * Populated from the JWT payload (`sub`/`preferred_username`/`username` and `roles`/`role`)
+   * when a stored session token exists, and updated on login and cleared on logout.
+   */
   public readonly user = computed(() => this._user());
 
   /**
@@ -122,6 +127,18 @@ export class AuthService extends AuthProvider {
       },
     });
   }
+
+  /**
+   * Starts a social login with the given client.
+   *
+   * @param client - Key of the identity provider client (as configured in the FedCM or JWT `clients` settings)
+   * @returns A promise resolving to `false` if the FedCM flow fails, `true` otherwise
+   *
+   * @remarks
+   * On Chrome with FedCM configured, it requests a credential, posts its `id_token` to the
+   * provider `tokenUrl`, stores the returned token and user, and redirects to `postLogoutRedirectUri`.
+   * Otherwise, when JWT auth is configured, it redirects the browser to the client URL (if any).
+   */
   public async connect(client: string): Promise<boolean> {
     const isChrome =
       navigator.userAgentData?.brands?.some((b) => b.brand === 'Google Chrome') ?? false;
@@ -313,6 +330,11 @@ export class AuthService extends AuthProvider {
     }
   }
 
+  /**
+   * Initializes the provider. No asynchronous setup is required for this implementation.
+   *
+   * @returns A promise that always resolves to `true`
+   */
   public init(): Promise<boolean> {
     return Promise.resolve(true);
   }
@@ -337,13 +359,20 @@ export class AuthService extends AuthProvider {
    * Logs out the user
    */
   public async logout(): Promise<boolean> {
-    this.dialog.closeAll();
     this.clearToken();
     this.clearUser();
     location.href = this.jwtAuth?.postLogoutRedirectUri ?? '/';
     return true;
   }
-  
+
+  /**
+   * Registers a new user by posting the data to the configured sign-up URL.
+   *
+   * @param data - Sign-up data
+   * @param options - Optional HTTP options forwarded to the request
+   * @returns A promise with the server response
+   * @throws Error ('No signup URL configured') if JWT auth is not configured
+   */
   public async signup(
     data: Signup | Record<string, unknown>,
     options?: Record<string, unknown>,

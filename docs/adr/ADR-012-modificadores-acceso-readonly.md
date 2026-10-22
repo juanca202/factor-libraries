@@ -1,10 +1,15 @@
+---
+id: ADR-012
+status: Accepted
+last_update: 2026-10-18
+deciders: [Equipo de Arquitectura]
+tags: [typescript, coding-style]
+supersedes: null
+superseded_by: null
+emits: [coding-style/CR-001, coding-style/CR-002]
+---
+
 # ADR-012: Convención de modificadores de acceso y uso de `readonly` en TypeScript
-
-**📖 [English](../../en/adr/ADR-012.md) | [Español](./ADR-012.md)**
-
-**Estado:** Aceptado  
-**Fecha:** 2025-12-04  
-**Decisores:** Equipo de Arquitectura
 
 ## Contexto
 

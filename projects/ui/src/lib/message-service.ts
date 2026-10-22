@@ -28,6 +28,12 @@ import { CommonModule } from '@angular/common';
 import { MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { MESSAGE_POSITION } from './constants/message-position';
 
+/**
+ * Content of the snack bar used by {@link MessageService} for notifications.
+ *
+ * @remarks
+ * Renders an optional icon and the message as text or HTML. Receives its data through `MAT_SNACK_BAR_DATA`.
+ */
 @Component({
   standalone: true,
   imports: [MatSnackBarModule, Icon],
@@ -42,9 +48,17 @@ import { MESSAGE_POSITION } from './constants/message-position';
   `,
 })
 export class MessageContentComponent {
+  /** Data injected by the snack bar (`message` and `options`). */
   data = inject(MAT_SNACK_BAR_DATA);
 }
 
+/**
+ * Dialog used by {@link MessageService} for modal messages.
+ *
+ * @remarks
+ * Renders an optional title, icon, message (text or HTML) and action buttons. When no actions are given,
+ * a single "Accept" button is shown, which selects the value `'-1'`. Receives its data through `MAT_DIALOG_DATA`.
+ */
 @Component({
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule, Icon],
@@ -129,15 +143,44 @@ export class MessageContentComponent {
   `,
 })
 export class MessageDialogComponent {
+  /** Data injected by the dialog (`message` and `options`). */
   data = inject(MAT_DIALOG_DATA);
 
+  /** Emits the value of the action selected by the user, before the dialog is closed. */
   readonly beforeSelect: OutputEmitterRef<string> = output();
 
+  /**
+   * Emits the chosen action value through `beforeSelect`.
+   *
+   * @param value - Value of the selected action
+   */
   select(value: string) {
     this.beforeSelect.emit(value);
   }
 }
 
+/**
+ * Service to show messages to the user as notifications (snack bar) or modal dialogs.
+ *
+ * @remarks
+ * Provided in root. Depends on Angular Material (`MatSnackBar`, `MatDialog`) and `StringUtil` from `@factor_ec/utils`.
+ *
+ * @example
+ * ```typescript
+ * messageService.show('Saved successfully');
+ *
+ * messageService
+ *   .show('Delete this item?', {
+ *     type: 'modal',
+ *     title: 'Confirm',
+ *     actions: [
+ *       { type: 'outlined', label: 'Cancel', value: 'cancel' },
+ *       { type: 'filled', label: 'Delete', value: 'delete' },
+ *     ],
+ *   })
+ *   .subscribe(value => console.log(value));
+ * ```
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -146,6 +189,18 @@ export class MessageService {
   private dialog = inject(MatDialog);
   private stringUtil = inject(StringUtil);
 
+  /**
+   * Shows a message as a notification (default) or as a modal dialog.
+   *
+   * @param message - Plain text, or a `MessageContent` object with `content` and `type` (`'text'` or `'html'`)
+   * @param options - Display options; `type` defaults to `'notification'` and `actionsVisible` to `true`
+   * @returns Observable that emits the value of the action selected in a modal. For notifications it never emits
+   *
+   * @remarks
+   * Notifications are shown at the top and auto-dismissed after `options.duration` or, if omitted, after the
+   * estimated reading time (capped at 30 seconds). Modals have a default width of `350px` and cannot be dismissed
+   * without choosing an action.
+   */
   show(
     message: string | MessageContent,
     options?: MessageOptions

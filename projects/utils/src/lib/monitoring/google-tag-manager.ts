@@ -21,8 +21,10 @@ declare var window: any;
   providedIn: 'root',
 })
 export class GoogleTagManager {
+  /** GTM container ID set by {@link GoogleTagManager.appendTrackingCode}; variables are only pushed once it is set. */
   public trackingId!: string;
   private readonly platformId = inject(PLATFORM_ID);
+  /** Router whose navigation events are tracked as page views. */
   public readonly router = inject(Router);
 
   /**

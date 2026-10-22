@@ -14,6 +14,7 @@ describe('LazyImage', () => {
 
     fixture = TestBed.createComponent(LazyImage);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('src', 'test.png');
     await fixture.whenStable();
   });
 

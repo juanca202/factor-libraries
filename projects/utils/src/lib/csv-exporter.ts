@@ -37,10 +37,17 @@ export class CsvExporter {
     useKeysAsHeaders: CSV_CONFIG.DEFAULT_KEYS_AS_HEADERS
   };
 
+  /** Current export options (library defaults merged with the last assigned options). */
   get options(): CsvOptions {
     return this._options;
   }
 
+  /**
+   * Sets the export options.
+   *
+   * @remarks
+   * Provided values are merged over the defaults; options from previous assignments are not kept.
+   */
   set options(options: Partial<CsvOptions>) {
     this._options = this.objectAssign({}, this.configDefaults, options);
   }

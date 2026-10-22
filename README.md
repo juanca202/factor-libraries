@@ -1,5 +1,7 @@
 # FactorLibraries
 
+FactorLibraries es un workspace Angular que reúne librerías reutilizables publicables por separado: `utils` (utilidades), `charts` (gráficos basados en D3), `msal` (autenticación con Azure AD / MSAL) y `ui` (componentes de interfaz como avatar, icono, progreso o valoración). Incluye una aplicación de demostración en `src/` y documentación de arquitectura en `docs/`.
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
 
 ## Development server

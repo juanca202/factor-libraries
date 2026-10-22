@@ -1,10 +1,15 @@
+---
+id: ADR-005
+status: Accepted
+last_update: 2026-10-18
+deciders: [Equipo de Arquitectura]
+tags: [i18n, frontend]
+supersedes: null
+superseded_by: null
+emits: []
+---
+
 # ADR-005: Estrategia de Internacionalización (i18n)
-
-**📖 [English](../../en/adr/ADR-005.md) | [Español](./ADR-005.md)**
-
-**Estado:** Aceptado  
-**Fecha:** 2025  
-**Decisores:** Equipo de Arquitectura
 
 ## Contexto
 

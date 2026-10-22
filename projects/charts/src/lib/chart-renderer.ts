@@ -7,6 +7,23 @@ import { ChartType } from './constants/chart-type';
 import { CachedChart } from './models/cached-chart';
 import { Chart, ChartOptions } from './models/chart';
 
+/**
+ * Service that renders D3-based charts (column, line, circle and event layers) into an SVG element.
+ *
+ * @remarks
+ * Several chart definitions can be drawn on the same SVG; they share a single linear Y scale
+ * computed from all of them, while each distinct `categoryField` gets its own band X scale.
+ * Rendered charts are cached per element and redrawn (debounced) on window resize. The cache
+ * entry is dropped when the element is removed from its parent node.
+ *
+ * @example
+ * ```typescript
+ * const renderer = inject(ChartRenderer);
+ * renderer.render(svgElement, [
+ *   { type: 'column', data: rows, field: 'total', categoryField: 'month' },
+ * ], { xAxis: { visible: true } });
+ * ```
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -45,6 +62,14 @@ export class ChartRenderer {
     if (yMin === Infinity || yMax === -Infinity) return [0, 0];
     return [yMin, yMax];
   }
+  /**
+   * Removes all child nodes drawn inside the given SVG element.
+   *
+   * @param element - The SVG element to clear
+   *
+   * @remarks
+   * Does not remove the element from the internal cache, so a later resize may redraw it.
+   */
   public clear(element: SVGElement) {
     d3.select(element).selectAll('*').remove();
   }
@@ -325,6 +350,18 @@ export class ChartRenderer {
       this.drawEventsPlaceholder(svg, chart, yDomain[0], yDomain[1], xScale, yScale),
   };
 
+  /**
+   * Renders the given charts into an SVG element, with transitions on updates.
+   *
+   * @param element - The SVG element to draw into
+   * @param items - Chart definitions to draw; each one is dispatched by its `type`
+   * @param options - Optional chart options (e.g. `xAxis.visible` to draw the X axis line)
+   *
+   * @remarks
+   * The Y domain is computed from the numeric `field` values of all items and reused while the
+   * same `items` array reference is passed for the element. Nothing is drawn if the element
+   * has no measurable size (zero width or height).
+   */
   public render(element: SVGElement, items: Chart[], options?: ChartOptions) {
     const svg = d3.select(element);
 
